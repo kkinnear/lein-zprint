@@ -6,6 +6,6 @@
 	    :key "mit"
 	    :year 2015}
   :eval-in-leiningen true
-  :dependencies [[zprint "0.8.8"]
+  :dependencies [[zprint "0.2.0"]
 		 [trptcolin/versioneer "0.1.0"]
                  [me.raynes/fs "1.4.6"]])
