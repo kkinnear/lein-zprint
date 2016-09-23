@@ -1,7 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
-## [Unreleased]
+
+## 0.1.2 - 2016-09-22
 ### Changed
+
+* Added alpha header to readme.
+* Linked to zprint 0.2.1
 
 ### Removed
 
@@ -11,4 +15,3 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Initial project commit.
 
-[Unreleased]: https://github.com/kkinnear/lein-zprint/compare/0.1.1...HEAD

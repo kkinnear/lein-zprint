@@ -1,8 +1,21 @@
 # lein-zprint
 
-A Leiningen plugin that will use the zprint library to format your Clojure source
-files.  Zprint reformats Clojure source files from scratch, completely ignoring
-all existing line breaks and white space in the file.  
+A Leiningen plugin that will use the zprint library to format your
+Clojure source files.  Zprint reformats Clojure source files from
+scratch, completely ignoring all existing line breaks and white
+space in the file.
+
+------------------------------
+### For the present, please consider this ALPHA quality software.
+
+That is why it always creates .old files.  I'll make that optional
+when I finally release it.
+
+It needs a few more people to beat on it before it is ready for
+prime time.
+
+------------------------------
+
 
 The zprint library itself is highly configurable, allowing you to tune the formatting.
 
@@ -10,7 +23,11 @@ The zprint library itself is highly configurable, allowing you to tune the forma
 
 It is pretty straightforward to use lein zprint.
 
-Place `[lein-zprint "0.1.1"]` into the `:plugins` vector of your project.clj.
+Place `[lein-zprint "0.1.2"]` into the `:plugins` vector of your project.clj:
+
+```
+:plugins [[lein-zprint "0.1.2"]]
+```
 
 Then, to format a source file, simply invoke `lein zprint` on that file: 
 
