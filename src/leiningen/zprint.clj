@@ -80,7 +80,7 @@
 
 (defn zprint-one-file
   "Take a file name, possibly including a path, and zprint that one file."
-  [project-options file-spec]
+  [project-options line-options file-spec]
   (cond
     (= file-spec ":explain") (do (println (lein-zprint-about))
                                  (println (zprint-about))
@@ -96,6 +96,7 @@
         (try
           (zp/configure-all!)
           (zp/set-options! project-options ":zprint map in project.clj")
+          (zp/set-options! line-options "lein zprint command line")
           (zp/zprint-file file-spec (fs/base-name file-spec) tmp-file)
           (when (:old? (zp/get-options))
             (fs/delete old-file)
@@ -122,21 +123,19 @@
         _ (when project-options
             (zp/set-options! project-options ":zprint map in project.clj"))
         arg1 (try (read-string (first args)) (catch Exception e nil))
-        args (cond
-               (map? arg1) (do (zp/set-options! arg1 "first arg to lein zprint")
-                               (next args))
+        [line-options args] 
+	  (cond
+               (map? arg1) [arg1 (next args)]
                (number? arg1)
-                 (do
-                   (zp/set-options! {:width arg1})
                    (if-let [arg2 (try (read-string (second args))
                                       (catch Exception e nil))]
-                     (cond (map? arg2) (do (zp/set-options!
-                                             arg2
-                                             "second arg to lein zprint")
-                                           (nnext args))
-                           :else (next args))
-                     (next args)))
-               :else args)]
-    (doseq [file-spec args] (zprint-one-file project-options file-spec))
+                     (cond (map? arg2) 
+		              [(merge {:width arg1} arg2)
+			       (nnext args)]
+                           :else [{:width arg1} (next args)])
+                     [{:width arg1} (next args)])
+               :else [{} args])]
+    (doseq [file-spec args] 
+      (zprint-one-file project-options line-options file-spec))
     (flush)))
        

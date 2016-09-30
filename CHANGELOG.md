@@ -1,6 +1,15 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
+## 0.1.4 - 2016-09-29
+### Changed
+
+### Removed
+
+### Fixed
+
+* Fixed broken command line options
+
 ## 0.1.3 - 2016-09-29
 ### Changed
 
