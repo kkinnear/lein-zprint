@@ -9,8 +9,12 @@ source files that you specify.
 ------------------------------
 ### For the present, please consider this ALPHA quality software.
 
-That is why it always creates .old files.  You can disable the
-.old rename feature in a zprint map in your project.clj.
+That is why it creates .old files by default.  You can disable the
+.old rename feature in a zprint map in your project.clj:
+
+```clojure
+ :zprint {:old? false}
+```
 
 It needs a few more people to beat on it before it is ready for
 prime time.
@@ -25,10 +29,10 @@ to tune the formatting.
 
 It is pretty straightforward to use lein zprint.
 
-Place `[lein-zprint "0.1.4"]` into the `:plugins` vector of your project.clj:
+Place `[lein-zprint "0.1.5"]` into the `:plugins` vector of your project.clj:
 
 ```
-:plugins [[lein-zprint "0.1.4"]]
+:plugins [[lein-zprint "0.1.5"]]
 ```
 
 Then, to format a source file, simply invoke `lein zprint` on that file: 
@@ -52,7 +56,7 @@ setting a zprint options map in your project.clj:
 
 ```
 ...
-:plugins [[lein-zprint "0.1.4"]]
+:plugins [[lein-zprint "0.1.5"]]
 :zprint {:old? false}
 ...
 ```
@@ -66,8 +70,8 @@ us all.
 
 ## Configuration
 
-See [zprint]() for information on how to configure the the actual formatting
-performed by the zprint library.  
+See [zprint](https://github.com/kkinnear/zprint) for information on how
+to configure the the actual formatting performed by the zprint library.  
 
 #### Overview
 
@@ -247,12 +251,14 @@ If you have problems with lein zprint, please create an issue.  Please include
 the output from:
 
 ```
-lein zprint :explain
+lein zprint :support <whatever-you-put-here-that-did-not-work-right> :support
 ```
 
 as well as the source file (or fragment thereof) that is a concern,
 and please show what lein zprint produced and explain how it differed
-from what you expected.
+from what you expected. 
+
+
 
 ## License
 

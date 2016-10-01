@@ -1,6 +1,20 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
+## 0.1.5 - 2016-10-05
+### Changed
+
+* Added basic tests for command line operations
+* Added basic tests for ;!zprint directive
+* Added :support keyword for (zprint nil :support)
+* Fixed initialization so that command line values show in :explain
+
+### Removed
+
+### Fixed
+
+* Fixed broken command line options
+
 ## 0.1.4 - 2016-09-29
 ### Changed
 

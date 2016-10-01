@@ -1,6 +1,7 @@
 /target
 /classes
 /checkouts
+/test/leiningen/*.in
 pom.xml
 pom.xml.asc
 *.jar

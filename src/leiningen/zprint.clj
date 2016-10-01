@@ -1,6 +1,7 @@
 (ns leiningen.zprint
     (:require
      [zprint.core :as zp :exclude [zprint]]
+     [zprint.config :as zc]
      [trptcolin.versioneer.core :as version]
      [me.raynes.fs :as fs])
     (:import [java.io File]))
@@ -57,6 +58,10 @@
      " You can place the token :explain anywhere you can place a file name"
      " and the current options will be output to standard out."
      ""
+     " You can also place the token :support anywhere you can put a file"
+     " name, and you should put :support at the end of a line that isn't"
+     " doing what you want, and submit that with your issue."
+     ""
      " Within a file, you can control the function of the zprint formatter"
      " with lines that start with ;!zprint, and contain an options map."
      ""
@@ -85,6 +90,9 @@
     (= file-spec ":explain") (do (println (lein-zprint-about))
                                  (println (zprint-about))
                                  (zp/czprint nil :explain))
+    (= file-spec ":support") (do (println (lein-zprint-about))
+                                 (println (zprint-about))
+                                 (zp/czprint nil :support))
     (= file-spec ":about") (println (lein-zprint-about))
     (= file-spec ":help") (println help-str)
     :else
@@ -98,7 +106,7 @@
           (zp/set-options! project-options ":zprint map in project.clj")
           (zp/set-options! line-options "lein zprint command line")
           (zp/zprint-file file-spec (fs/base-name file-spec) tmp-file)
-          (when (:old? (zp/get-options))
+          (when (:old? (zc/get-options))
             (fs/delete old-file)
             (fs/rename file-spec old-file))
           (fs/rename tmp-file file-spec)
@@ -123,19 +131,18 @@
         _ (when project-options
             (zp/set-options! project-options ":zprint map in project.clj"))
         arg1 (try (read-string (first args)) (catch Exception e nil))
-        [line-options args] 
-	  (cond
-               (map? arg1) [arg1 (next args)]
-               (number? arg1)
-                   (if-let [arg2 (try (read-string (second args))
-                                      (catch Exception e nil))]
-                     (cond (map? arg2) 
-		              [(merge {:width arg1} arg2)
-			       (nnext args)]
-                           :else [{:width arg1} (next args)])
-                     [{:width arg1} (next args)])
-               :else [{} args])]
-    (doseq [file-spec args] 
+        [line-options args]
+          (cond (map? arg1) [arg1 (next args)]
+                (number? arg1) (if-let [arg2 (try (read-string (second args))
+                                                  (catch Exception e nil))]
+                                 (cond (map? arg2) [(merge {:width arg1} arg2)
+                                                    (nnext args)]
+                                       :else [{:width arg1} (next args)])
+                                 [{:width arg1} (next args)])
+                :else [{} args])]
+    (when line-options
+      (zp/set-options! line-options "lein zprint command line"))
+    (doseq [file-spec args]
       (zprint-one-file project-options line-options file-spec))
     (flush)))
        
