@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
+## 0.1.6 - 2016-10-06
+### Changed
+
+* Added small fixes to :help text
+* Reformatted with updated zprint library
+
+### Removed
+
+### Fixed
+
+* Fixed broken command line options
+
 ## 0.1.5 - 2016-10-05
 ### Changed
 

@@ -29,10 +29,10 @@ to tune the formatting.
 
 It is pretty straightforward to use lein zprint.
 
-Place `[lein-zprint "0.1.5"]` into the `:plugins` vector of your project.clj:
+Place `[lein-zprint "0.1.6"]` into the `:plugins` vector of your project.clj:
 
 ```
-:plugins [[lein-zprint "0.1.5"]]
+:plugins [[lein-zprint "0.1.6"]]
 ```
 
 Then, to format a source file, simply invoke `lein zprint` on that file: 
@@ -56,7 +56,7 @@ setting a zprint options map in your project.clj:
 
 ```
 ...
-:plugins [[lein-zprint "0.1.5"]]
+:plugins [[lein-zprint "0.1.6"]]
 :zprint {:old? false}
 ...
 ```

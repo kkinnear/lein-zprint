@@ -34,6 +34,14 @@
      " It replaces the files by new ones that are completely reformatted."
      " The existing files are renamed by appending .old to the previous name."
      ""
+     "     If you put this line in your project.clj, it won't keep"
+     "     the original files around:"
+     ""
+     "         :zprint {:old? false}"
+     ""
+     " Using lein zprint:"
+     " ------------------"
+     ""
      " To reformat one file in myproject:"
      ""
      "   lein zprint src/myproject/core.clj"
@@ -95,30 +103,29 @@
                                  (zp/czprint nil :support))
     (= file-spec ":about") (println (lein-zprint-about))
     (= file-spec ":help") (println help-str)
-    :else
-      (let [parent-path (fs/parent file-spec)
-            tmp-name (fs/temp-name "zprint")
-            tmp-file (str parent-path File/separator tmp-name)
-            old-file (str file-spec ".old")]
-        (println "Processing file:" file-spec)
-        (try
-          (zp/configure-all!)
-          (zp/set-options! project-options ":zprint map in project.clj")
-          (zp/set-options! line-options "lein zprint command line")
-          (zp/zprint-file file-spec (fs/base-name file-spec) tmp-file)
-          (when (:old? (zc/get-options))
-            (fs/delete old-file)
-            (fs/rename file-spec old-file))
-          (fs/rename tmp-file file-spec)
-          (catch
-            Exception
-            e
-            (println
-              (str "Unable to process file: "
-                   file-spec
-                   " because: "
-                   e
-                   " Leaving it unchanged!")))))))
+    :else (let [parent-path (fs/parent file-spec)
+                tmp-name (fs/temp-name "zprint")
+                tmp-file (str parent-path File/separator tmp-name)
+                old-file (str file-spec ".old")]
+            (println "Processing file:" file-spec)
+            (try
+              (zp/configure-all!)
+              (zp/set-options! project-options ":zprint map in project.clj")
+              (zp/set-options! line-options "lein zprint command line")
+              (zp/zprint-file file-spec (fs/base-name file-spec) tmp-file)
+              (when (:old? (zc/get-options))
+                (fs/delete old-file)
+                (fs/rename file-spec old-file))
+              (fs/rename tmp-file file-spec)
+              (catch
+                Exception
+                e
+                (println
+                  (str "Unable to process file: "
+                       file-spec
+                       " because: "
+                       e
+                       " Leaving it unchanged!")))))))
 
 (defn ^:no-project-needed zprint
   "Pretty-print all of the arguments that are not a map, replacing the
