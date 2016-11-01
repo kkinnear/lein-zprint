@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
+## 0.1.7 - 2016-10-31
+### Changed
+
+* Updated to [zprint "0.2.7}]
+* Added test for comment handling
+
+### Removed
+
+### Fixed
+
+* Fixed broken command line options
+
 ## 0.1.6 - 2016-10-06
 ### Changed
 

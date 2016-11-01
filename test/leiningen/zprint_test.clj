@@ -78,3 +78,12 @@
 (leiningen.zprint/zprint {:zprint {:old? false}} "test/leiningen/skip.in")
 
 (expect (slurp "test/leiningen/skip.out") (slurp "test/leiningen/skip.in"))
+
+;--------------------------
+
+(fs/copy "test/leiningen/comment" "test/leiningen/comment.in")
+
+(leiningen.zprint/zprint {:zprint {:old? false}} "test/leiningen/comment.in")
+
+(expect (slurp "test/leiningen/comment.out")
+        (slurp "test/leiningen/comment.in"))
