@@ -1,15 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
+## 0.1.8 - 2016-11-9
+### Changed
+
+* Added announcement of rename of existing files with .old extensions
+  with suggestion about how to stop this behavior.
+* Added several tests involving :left-space :keep or :drop
+
 ## 0.1.7 - 2016-10-31
 ### Changed
 
 * Updated to [zprint "0.2.7}]
 * Added test for comment handling
-
-### Removed
-
-### Fixed
 
 * Fixed broken command line options
 
@@ -18,8 +21,6 @@ All notable changes to this project will be documented in this file.
 
 * Added small fixes to :help text
 * Reformatted with updated zprint library
-
-### Removed
 
 ### Fixed
 
@@ -33,16 +34,11 @@ All notable changes to this project will be documented in this file.
 * Added :support keyword for (zprint nil :support)
 * Fixed initialization so that command line values show in :explain
 
-### Removed
-
 ### Fixed
 
 * Fixed broken command line options
 
 ## 0.1.4 - 2016-09-29
-### Changed
-
-### Removed
 
 ### Fixed
 
@@ -56,19 +52,11 @@ All notable changes to this project will be documented in this file.
 * Documented that you need to be in the project.clj directory
 * Linked to zprint 0.2.2
 
-### Removed
-
-### Fixed
-
 ## 0.1.2 - 2016-09-22
 ### Changed
 
 * Added alpha header to readme.
 * Linked to zprint 0.2.1
-
-### Removed
-
-### Fixed
 
 ## 0.1.1 - 2016-09-21
 ### Added

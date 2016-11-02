@@ -6,22 +6,6 @@ scratch, completely ignoring all existing line breaks and white
 space in the file. Lein-zprint will invoke zprint on one or more
 source files that you specify.
 
-------------------------------
-### For the present, please consider this ALPHA quality software.
-
-That is why it creates .old files by default.  You can disable the
-.old rename feature in a zprint map in your project.clj:
-
-```clojure
- :zprint {:old? false}
-```
-
-It needs a few more people to beat on it before it is ready for
-prime time.
-
-------------------------------
-
-
 The zprint library itself is highly configurable, allowing you 
 to tune the formatting.
 
@@ -29,10 +13,10 @@ to tune the formatting.
 
 It is pretty straightforward to use lein zprint.
 
-Place `[lein-zprint "0.1.7"]` into the `:plugins` vector of your project.clj:
+Place `[lein-zprint "0.1.8"]` into the `:plugins` vector of your project.clj:
 
 ```
-:plugins [[lein-zprint "0.1.7"]]
+:plugins [[lein-zprint "0.1.8"]]
 ```
 
 Then, to format a source file, simply invoke `lein zprint` on that file: 
@@ -56,7 +40,7 @@ setting a zprint options map in your project.clj:
 
 ```
 ...
-:plugins [[lein-zprint "0.1.7"]]
+:plugins [[lein-zprint "0.1.8"]]
 :zprint {:old? false}
 ...
 ```

@@ -87,3 +87,23 @@
 
 (expect (slurp "test/leiningen/comment.out")
         (slurp "test/leiningen/comment.in"))
+
+;--------------------------
+
+(fs/copy "test/leiningen/dropspace" "test/leiningen/dropspace.in")
+
+(leiningen.zprint/zprint {:zprint {:old? false}} "test/leiningen/dropspace.in")
+
+(expect (slurp "test/leiningen/dropspace.out")
+        (slurp "test/leiningen/dropspace.in"))
+
+;--------------------------
+
+(fs/copy "test/leiningen/keepspace" "test/leiningen/keepspace.in")
+
+(leiningen.zprint/zprint {:zprint {:old? false}} "test/leiningen/keepspace.in")
+
+(expect (slurp "test/leiningen/keepspace.out")
+        (slurp "test/leiningen/keepspace.in"))
+
+

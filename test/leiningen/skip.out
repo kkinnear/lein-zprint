@@ -5,7 +5,7 @@
   [a b c] (let [d a e b f c] (map #(println %) b)) (if (and :a :b)
     [:a :b :c :aaaaaaaaaaaaa :bbbbbbbbbbbbbbb :ccccccccccccc :ddddddddd :eeeeeeeeeee :ffffffff]
     #_(concat (list :averylongkeyword :anotherverylongkeyword :athirdverylongkeywor :afourthone :fifthone :sixthone))))
- 
+
 (defn tstfn2
   "This is a second function."
   [a b c]

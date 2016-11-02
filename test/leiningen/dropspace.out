@@ -11,7 +11,7 @@
 ;; This is another comment
 ;; and a second contiguous comment
 
-
+;; Test dropping left space
 (defn tstfn2
   "This is a second function."
   [a b c]
@@ -22,3 +22,16 @@
     #_(concat (list :averylongkeyword :anotherverylongkeyword
                     :athirdverylongkeywor :afourthone
                     :fifthone :sixthone))))
+
+; test skipping the formatting, which also means don't drop the next space
+;!zprint {:format :skip}
+    (defn tstfn3
+      "This is a second function."
+      [a b c]
+      (let [d a e b f c] (map #(println %) b))
+      (if (and :a :b)
+        [:a :b :c :aaaaaaaaaaaaa :bbbbbbbbbbbbbbb :ccccccccccccc :ddddddddd
+         :eeeeeeeeeee :ffffffff]
+        #_(concat (list :averylongkeyword :anotherverylongkeyword
+                        :athirdverylongkeywor :afourthone
+                        :fifthone :sixthone))))
