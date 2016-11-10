@@ -1,6 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
+## 0.1.9 - 2016-11-9
+### Changed
+
+* Added announcement of rename of existing files with .old extensions
+  with suggestion about how to stop this behavior.
+* Added several tests involving :left-space :keep or :drop
+
 ## 0.1.8 - 2016-11-9
 ### Changed
 
