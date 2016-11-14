@@ -3,20 +3,29 @@
 A Leiningen plugin that will use the zprint library to format your
 Clojure source files.  Zprint reformats Clojure source files from
 scratch, completely ignoring all existing line breaks and white
-space in the file. Lein-zprint will invoke zprint on one or more
-source files that you specify.
+space inside function definitions. Lein-zprint will invoke zprint 
+on one or more source files that you specify.
+
+Use boot instead of Leiningen?  No problem, use: [boot-fmt][bootfmt]
+
+[boot-fmt][bootfmt] is usable even if you don't use boot, and has
+different command line arguments. You might find
+it more to your liking even if you use Leiningen.
 
 The zprint library itself is highly configurable, allowing you 
 to tune the formatting.
+
+[bootfmt]: https://github.com/pesterhazy/boot-fmt
+
 
 ## Usage
 
 It is pretty straightforward to use lein zprint.
 
-Place `[lein-zprint "0.1.9"]` into the `:plugins` vector of your project.clj:
+Place `[lein-zprint "0.1.10"]` into the `:plugins` vector of your project.clj:
 
 ```
-:plugins [[lein-zprint "0.1.9"]]
+:plugins [[lein-zprint "0.1.10"]]
 ```
 
 Then, to format a source file, simply invoke `lein zprint` on that file: 
@@ -40,7 +49,7 @@ setting a zprint options map in your project.clj:
 
 ```
 ...
-:plugins [[lein-zprint "0.1.9"]]
+:plugins [[lein-zprint "0.1.10"]]
 :zprint {:old? false}
 ...
 ```
@@ -106,7 +115,7 @@ You can use the following approaches when configuring lein zprint:
   map.  If it is a number, it is used as the width.  If it is an
   options map, it is used to configure zprint.  If the first argument
   is a number, the second argument can be an options map.  Note
-  that an options map must be surrounded by double quotes.
+  that an options map must be surrounded by single or double quotes.
 
   Here is yet another way to change the width to 90:
 
@@ -118,7 +127,7 @@ You can use the following approaches when configuring lein zprint:
   allowed to configure zprint -- see the zprint readme).
 
   ```
-  lein zprint "{:width 90}" src/myproject/*.clj
+  lein zprint '{:width 90}' src/myproject/*.clj
   ```
 
 There are so many ways to configure zprint (and even more for lein
