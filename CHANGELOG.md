@@ -1,15 +1,20 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
+## 0.1.11 - 2017-1-8
+### Changed
+
+* Updated to [zprint "0.2.11"]
+
 ## 0.1.10 - 2016-12-23
 ### Changed
 
-* Updated to [zprint "0.2.10}]
+* Updated to [zprint "0.2.10"]
 
 ## 0.1.9 - 2016-11-13
 ### Changed
 
-* Updated to [zprint "0.2.9}]
+* Updated to [zprint "0.2.9"]
 
 ## 0.1.8 - 2016-11-9
 ### Changed
@@ -17,12 +22,12 @@ All notable changes to this project will be documented in this file.
 * Added announcement of rename of existing files with .old extensions
   with suggestion about how to stop this behavior.
 * Added several tests involving :left-space :keep or :drop
-* Updated to [zprint "0.2.8}]
+* Updated to [zprint "0.2.8"]
 
 ## 0.1.7 - 2016-10-31
 ### Changed
 
-* Updated to [zprint "0.2.7}]
+* Updated to [zprint "0.2.7"]
 * Added test for comment handling
 
 * Fixed broken command line options
