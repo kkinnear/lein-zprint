@@ -107,3 +107,13 @@
         (slurp "test/leiningen/keepspace.in"))
 
 
+;--------------------------
+
+(expect
+  ":planck-cmd-line cache directory 'sr' must already exist, and it does not!\n"
+  (with-out-str (zprint {} ":planck-cmd-line" "sr")))
+
+(expect ":planck-cmd-line requires a cache-dir!\n"
+        (with-out-str (zprint {} ":planck-cmd-line")))
+
+

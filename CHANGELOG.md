@@ -1,6 +1,19 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
+## 0.1.16 - 2017-2-27
+
+### Changed
+
+* Added :lumo-cmd-line capability as well.  Similar to :planck-cmd-line
+  but slightly different.
+
+* Added :planck-cmd-line capability to output a single line script to
+  make a pretty printing filter using planck.  Some minor tests and
+  lots of documentation.
+
+* Updated to [zprint "0.2.16"]
+
 ## 0.1.15 - 2017-1-24
 ### Changed
 

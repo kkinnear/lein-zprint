@@ -4,7 +4,10 @@ A Leiningen plugin that will use the zprint library to format your
 Clojure source files.  Zprint reformats Clojure source files from
 scratch, completely ignoring all existing line breaks and white
 space inside function definitions. Lein-zprint will invoke zprint 
-on one or more source files that you specify.
+on one or more source files that you specify.  
+
+It will also help you configure a Unix-style code formating filter
+using the zprint library which you can use directly in your editor.
 
 Use boot instead of Leiningen?  No problem, use: [boot-fmt][bootfmt]
 
@@ -22,10 +25,10 @@ to tune the formatting.
 
 It is pretty straightforward to use lein zprint.
 
-Place `[lein-zprint "0.1.15"]` into the `:plugins` vector of your project.clj:
+Place `[lein-zprint "0.1.16"]` into the `:plugins` vector of your project.clj:
 
 ```
-:plugins [[lein-zprint "0.1.15"]]
+:plugins [[lein-zprint "0.1.16"]]
 ```
 
 Then, to format a source file, simply invoke `lein zprint` on that file: 
@@ -49,7 +52,7 @@ setting a zprint options map in your project.clj:
 
 ```
 ...
-:plugins [[lein-zprint "0.1.15"]]
+:plugins [[lein-zprint "0.1.16"]]
 :zprint {:old? false}
 ...
 ```
@@ -61,7 +64,265 @@ for `lein zprint` will be the top level of your leiningen project
 and it will not find the files in the current directory.  Which will confuse
 us all.
 
-## Configuration
+# A zprint formatting filter using planck or lumo
+
+With a very small amount of setup, you can create a script which
+will act as a "filter" and format Clojure or ClojureScript source
+files.  Much like the Unix utility `fmt` will word wrap a paragraph
+of text, you can create a similar utility that will pretty print a
+bit of Clojure source.  Most editors have the ability to pipe a
+section of text through a filter (like `fmt`) and replace the
+original text by the output of the filter.  If you set up a zprint
+filter, you can then pretty print a function in your editor with a
+few keystrokes.
+
+The only downside is that the startup and execution isn't instanteous
+-- it takes a couple of seconds on my mid-2012 MacBook Air.  I'm
+hoping to find ways to speed that up, but even at 1.5-3 seconds for
+a moderate sized function, I find this quite useful, and you might
+as well.
+
+`lein-zprint` will output the single line you need for such a script,
+and will figure out the classpath and all of the options you need.
+
+Here are the detailed instructions:
+
+  1. Install [planck][planck-url] or [lumo][lumo-url].  
+
+  I have tried this planck v2, and lumo 1.2.0.  Do not
+  use earlier versions.
+  
+  Why choose one over the other?  If you already have one or the
+  other, I'd use that.  I initially implemented this with planck,
+  and later also implemented it with lumo.  In my environment, in
+  the not terribly rigorous testing I've done, lumo is almost twice
+  as fast as planck -- but I found the planck version perfectly
+  usable before I implemented the lumo version.   That said, I now
+  use the lumo version.  Both are easy to install and use, and I
+  highly recommend both projects.
+
+  2. Figure out where you want to put the script so that it is on
+  your path.  I put mine in ~/bin, for example, since that directory
+  is already in my path.  It doesn't matter where you put it, as
+  long as the directory you put it in is on your path.
+
+  3. Create a directory for the cache of Javascript files that
+  planck and lumo use to startup quickly.  This is the `<cache-directory>`
+  that you will use in the next step. Planck or lumo will compile
+  the Clojurescript code once, and cache it in the directory that
+  you provide.  This cacheing is very important, as it takes minutes
+  to compile the code to Javascript, but only a second or so to
+  load it up.  This directory must already exist when specified in
+  the `lein zprint :planck-cmd-line` or `lein zprint :lumo-cmd-line`
+  directive below.
+
+  4. Go to any project which has `lein-zprint` as a plugin, and
+  type: `lein zprint :planck-cmd-line <cache-directory>` or
+  `lein zprint :lumo-cmd-line <cache-directory>`.
+
+  You should see a single line come out which starts with `planck`
+  or `lumo`,
+  and looks something like this (of course your paths will be
+  different and the versions of the jars will probably be different):
+  
+  Planck:
+
+  ```
+planck -s -k /Users/kkinnear/bin/planck-cache -c /Users/kkinnear/.m2/repository/zprint/zprint/0.2.16/zprint-0.2.16.jar:/Users/kkinnear/.m2/repository/rewrite-cljs/rewrite-cljs/0.4.3/rewrite-cljs-0.4.3.jar -m zprint.planck
+  ```
+
+  Lumo:
+
+  ```
+lumo -k /Users/kkinnear/bin/planck-cache -c /Users/kkinnear/.m2/repository/zprint/zprint/0.2.16/zprint-0.2.16.jar:/Users/kkinnear/.m2/repository/rewrite-cljs/rewrite-cljs/0.4.3/rewrite-cljs-0.4.3.jar -m zprint.lumo
+  ```
+
+  5. Once you get to that point, type the command line again, and
+  pipe the output into a file whose name will be the name of your
+  filter.  In the example below, I have chosen "zp" as the filename
+  of the pretty print filter:
+
+  ```
+lein zprint :planck-cmd-line <cache-directory> >zp
+  ```
+
+  or
+
+  ```
+lein zprint :lumo-cmd-line <cache-directory> >zp
+  ```
+
+  6. Move the file created above into the directory that you
+  identified in Step #3, above, and make it executable:
+
+  ```
+chmod +x zp
+  ```
+
+  7. Compile the Clojurescript and also test the script.  
+
+  Note --
+  the *first* time it runs, it will take about two minutes or
+  possibly even more to run.  This is how long the initial compile
+  takes.  After that, it will run in 1.5-3 seconds each time, since
+  planck or lumo will cache the Javascript in the directory that you have
+  given.  It will seem like a lot longer than two minutes for it
+  to compile the first time -- I was surprised when I actually
+  measured it.  I would have said it was at least 4 minutes, maybe
+  more.  Seems like forever!  Eventually, it should compile.
+
+  The filter reads from stdin, and writes to stdout.  A simple way
+  to test it (and have it compile) is to create a short file with
+  a single string in it:
+
+  ```
+echo "\"hello world\"" >> test.clj
+  ```
+
+  and then to try out the zprint filter on it:
+
+  ```
+zp < test.clj
+"hello world"
+  ```
+
+  If you get the string that you put in out of it, then it is
+  working.  It will not be quick the first time, but if you run it
+  again, it should be only 1.5-3 seconds.
+
+  7. Figure out how to get your editor to take a bunch of text and
+  pipe it through a filter.  A commonly used filter is `fmt`, so
+  you might look for how you can pipe some text through `fmt`. The
+  script you have created can be used the same way, only instead
+  of `fmt`, you give it `zp`.  You may also want to determine how
+  to select the text between two matching parentheses.  In any case,
+  do whatever it necessary with your editor to pipe a complete
+  Clojure(script) function through a unix-style filter.
+
+    * In vim, you can type `!a(zp` if you have created the script to
+    be called `zp`.  If you are sitting on the top level left parenthesis
+    (which you should be), then this will pipe everything to the balanced
+    right parenthesis through `zp`, formatting an entire function.
+    There are other ways to mark all of the text between parentheses in
+    vim.
+
+    * Emacs seems to have several ways to do this, including moving
+    to the top level of an s-expression before sending all of the
+    information off to an external program.  I'm not even going to
+    try to sort through the various options and recommend one particular
+    one.
+
+  If you specify the filter as `zp` (or whatever you have called
+  it), you should get the text you have replaced with a nicely
+  formatted output.
+  
+  Note: you should do an entire function, as if you start in the
+  middle, zprint has no way to know the width of the output you want.
+
+  Note: Some editors may not recognize that parentheses in comments
+  don't "count", and so if you have unbalanced parentheses in comments
+  then if you use a command that gathers up all of the text to the balanced
+  right parenthesis you may not send all of the Clojure(script) function
+  to zprint, in which case zprint will output an error which will end up
+  back in your text file along with the unmodified input.  You can remove 
+  the error with the editor, or just undo the change.
+
+  Additionally, the default width for zprint is 80 columns.  If you
+  routinely expect your code to be more than 80 columns, you can
+  configure zprint in several ways, see below.
+
+That's the basics of creating and installing the zprint filter.
+
+[planck-url]: https://github.com/mfikes/planck
+[lumo-url]: https://github.com/anmonteiro/lumo
+
+
+### Configuring the zprint filter
+
+There are three ways to configure the zprint filter.   Environment
+variables cannot be used.
+
+  * Use a `~/.zprintrc` configuration file.  See the zprint
+  readme for how that works -- Clojurescript zprint using planck 
+  or lumo will support the `~/.zprintrc` file.
+
+  * Add an options map to the single line in the script file.  For
+  instance (this is a very long line, scroll right all the way):
+
+  ```
+planck -s -k /Users/kkinnear/bin/planck-cache -c /Users/kkinnear/.m2/repository/zprint/zprint/0.2.16/zprint-0.2.16.jar:/Users/kkinnear/.m2/repository/rewrite-cljs/rewrite-cljs/0.4.3/rewrite-cljs-0.4.3.jar -m zprint.planck '{:width 90}'
+  ```
+  would cause all of the code piped through this script to be formatted for
+  a width of 90, and not 80.  Don't forget the single quotes!
+
+  * Use `;!zprint {...}` directives inside of a source file.
+  This only works if the directive is co-located with the source of
+  the function, and you pipe them through the filter together.  But
+  the filter will honor any `;!zprint {...}` directives that it encounters,
+  just like `lein zprint` will honor them in the files that it processes.
+
+If you have several ways that you like to format functions, you can
+have several executable scripts with a different option map in each
+one.  They can all share the same planck or lumo Javascript cache,
+and you can use the one that makes the most sense for this or that
+function.  You might have one that does default zprint, and another
+that has an option map of `{:style :justified}` which you would use
+when you wanted to format a function using the justified approach.
+Or just if you wanted to see if a function looked better that way
+as an experiment.  You could have as many different one-line
+zprint-planck or zprint-lumo scripts as you could remember to use,
+all sharing the same Javascript cache (as long as they all have the
+same classpath in them).
+
+### Upgrading the zprint filter
+
+If you upgrade `lein-zprint` or `zprint` itself to a version beyond
+that which was current when you first created the filter command file,
+you do not have to go through the process all over again.  You can
+simply edit the script file to have the version of the `zprint` library
+that is current at the time.  You have to have downloaded this version
+as a dependency of some project, as the script does no dependency downloads.
+But if you have used a newer version of `lein-zprint` or `zprint`, then you
+can put the newer version of `zprint` or the version of `zprint` used by
+an updated `lein-zprint` in the script file, and it will use the newer version.
+
+If you are using `lein-zprint`, and you type:
+
+```
+lein zprint :explain
+```
+
+lots of output will be produced.
+The version of zprint used by `lein-zprint` will show up as the value
+of the `:version` key:
+
+```
+{...
+ :user-fn-map {},
+ :vector {:indent 1, :wrap-after-multi? true, :wrap-coll? true, :wrap? true},
+ :version "zprint-0.2.16",
+ :width 80}
+```
+
+If this is a later version than you have in the `zp` script you created,
+then you might want to edit the script to upgrade.
+
+It will, of course, take another two minutes or so to compile the first
+time you use the script after you edit the script to reflect
+the newer version of zprint to which you wish to upgrade.
+
+NOTE: `lumo` as of version 1.2.0 does not invalidate the cache based on
+the dates of the file, so that when upgrading you probably have to delete
+all of the files in the cache directory that you gave lumo.  I expect that
+over time this will change, but you would never be incorrect to explicitly
+delete the cache files when you upgrade.
+
+NOTE: If you have multiple scripts sharing the same cache (which is the
+reasonable way to do this), then you _must_ upgrade them all at the same
+time, otherwise you will constantly be invalidating the cache and reloading
+it every time you use a script with a different version of zprint. 
+
+## Configuring lein zprint to operate on source files
 
 See [zprint](https://github.com/kkinnear/zprint) for information on how
 to configure the the actual formatting performed by the zprint library.  
@@ -255,6 +516,6 @@ from what you expected.
 
 ## License
 
-Copyright © 2016 Kim Kinnear
+Copyright © 2016-2017 Kim Kinnear
 
 Distributed under the MIT License.  See the file LICENSE for details.

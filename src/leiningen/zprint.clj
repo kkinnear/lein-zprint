@@ -21,8 +21,24 @@
   [vec-str]
   (apply str (interpose "\n" vec-str)))
 
-;!zprint {:format :next :vector {:wrap? false}}
 
+(defn common-cmd-str
+  "Figure out a planck command string if possible."
+  [cache-dir]
+  (let [cp (seq (.getURLs (java.lang.ClassLoader/getSystemClassLoader)))
+        paths (map #(.getPath %) cp)
+        zprint-cp (first (filter #(re-find #"/zprint.*jar" %) paths))
+        rewrite-cljs-cp (first (filter #(re-find #"rewrite-cljs.*jar" %)
+                                 paths))]
+    (cond (and (nil? zprint-cp) (nil? rewrite-cljs-cp))
+            "Cannot find classpath for both zprint and rewrite-cljs .jar files!"
+          (nil? zprint-cp) "Unable to determine classpath for zprint .jar file!"
+          (nil? rewrite-cljs-cp)
+            "Unable to determine classpath for rewrite-cljs .jar file!"
+          :else
+            (str "-k " cache-dir " -c " zprint-cp ":" rewrite-cljs-cp " -m"))))
+
+;!zprint {:format :next :vector {:wrap? false}}
 (def help-str
   (vec-str-to-str
     [(lein-zprint-about)
@@ -51,6 +67,16 @@
      ""
      " Make sure you run lein zprint with the current directory set to"
      " the directory containing your project.clj file."
+     ""
+     " To have lein-zprint output a string which you can use as a "
+     " zprint pretty print filter:"
+     ""
+     "    lein zprint :planck-cmd-line <cache-dir>"
+     "    lein zprint :lumo-cmd-line <cache-dir>"
+     ""
+     " where <cache-dir> is a directory that exists that can hold the"
+     " Javascript files that planck or lumo will generate. See the readme"
+     " for additional details."
      ""
      " To configure lein zprint, you can:"
      ""
@@ -135,14 +161,43 @@
             (zp/set-options! project-options ":zprint map in project.clj"))
         arg1 (try (read-string (first args)) (catch Exception e nil))
         [line-options args]
-          (cond (map? arg1) [arg1 (next args)]
-                (number? arg1) (if-let [arg2 (try (read-string (second args))
-                                                  (catch Exception e nil))]
-                                 (cond (map? arg2) [(merge {:width arg1} arg2)
-                                                    (nnext args)]
-                                       :else [{:width arg1} (next args)])
-                                 [{:width arg1} (next args)])
-                :else [{} args])]
+          (cond
+            (map? arg1) [arg1 (next args)]
+            (number? arg1) (if-let [arg2 (try (read-string (second args))
+                                              (catch Exception e nil))]
+                             (cond (map? arg2) [(merge {:width arg1} arg2)
+                                                (nnext args)]
+                                   :else [{:width arg1} (next args)])
+                             [{:width arg1} (next args)])
+            (= :planck-cmd-line arg1)
+              (do
+                (let [cache-dir (first (next args))
+                      full-cache-dir (str (fs/file cache-dir))]
+                  (if cache-dir
+                    (if (fs/exists? full-cache-dir)
+                      (println (str "planck -s "
+                                    (common-cmd-str full-cache-dir)
+                                    " zprint.planck"))
+                      (println (str ":planck-cmd-line cache directory '"
+                                    cache-dir
+                                    "' must already exist, and it does not!")))
+                    (println ":planck-cmd-line requires a cache-dir!")))
+                [nil nil])
+            (= :lumo-cmd-line arg1)
+              (do
+                (let [cache-dir (first (next args))
+                      full-cache-dir (str (fs/file cache-dir))]
+                  (if cache-dir
+                    (if (fs/exists? full-cache-dir)
+                      (println (str "lumo "
+                                    (common-cmd-str full-cache-dir)
+                                    " zprint.lumo"))
+                      (println (str ":lumo-cmd-line cache directory '"
+                                    cache-dir
+                                    "' must already exist, and it does not!")))
+                    (println ":lumo-cmd-line requires a cache-dir!")))
+                [nil nil])
+            :else [{} args])]
     (when line-options
       (zp/set-options! line-options "lein zprint command line"))
     (let [old-files (mapv #(zprint-one-file project-options line-options %)
