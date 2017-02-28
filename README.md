@@ -15,8 +15,14 @@ Use boot instead of Leiningen?  No problem, use: [boot-fmt][bootfmt]
 different command line arguments. You might find
 it more to your liking even if you use Leiningen.
 
-The zprint library itself is highly configurable, allowing you 
-to tune the formatting.
+The zprint library itself is highly configurable, allowing you to
+tune the formatting.  Note that as of zprint 0.3.0 (and lein-zprint
+0.2.0) configuring zprint (and by extension lein-zprint) from system
+environment variables and Java system properties is __DEPRECATED__,
+though both will still work for the present with lein-zprint.
+
+Use `$HOME/.zprintrc` or a `:zprint {}` options map in your
+`project.clj` file to configure lein-zprint. 
 
 [bootfmt]: https://github.com/pesterhazy/boot-fmt
 
@@ -25,10 +31,10 @@ to tune the formatting.
 
 It is pretty straightforward to use lein zprint.
 
-Place `[lein-zprint "0.1.16"]` into the `:plugins` vector of your project.clj:
+Place `[lein-zprint "0.2.0"]` into the `:plugins` vector of your project.clj:
 
 ```
-:plugins [[lein-zprint "0.1.16"]]
+:plugins [[lein-zprint "0.2.0"]]
 ```
 
 Then, to format a source file, simply invoke `lein zprint` on that file: 
@@ -52,7 +58,7 @@ setting a zprint options map in your project.clj:
 
 ```
 ...
-:plugins [[lein-zprint "0.1.16"]]
+:plugins [[lein-zprint "0.2.0"]]
 :zprint {:old? false}
 ...
 ```
@@ -65,6 +71,11 @@ and it will not find the files in the current directory.  Which will confuse
 us all.
 
 # A zprint formatting filter using planck or lumo
+
+_Wouldn't you really prefer a __Clojure uberjar__ which does the
+same thing, starts up as fast, and runs faster for moderate to
+large functions?  See [here](https://github.com/kkinnear/zprint/docs/filter.md)
+for how to get it!_
 
 With a very small amount of setup, you can create a script which
 will act as a "filter" and format Clojure or ClojureScript source
@@ -343,7 +354,7 @@ You can use the following approaches when configuring lein zprint:
   the zprint readme.  This configuration information will be used for all invocations
   of the zprint library by this user -- including lein zprint and repl calls.
 
-  * Environment variables, as described in the zprint readme. 
+  * __DEPRECATED__: Environment variables, as described in the zprint readme. 
 
   For instance, you can change the width from 80 (the default) to 90 by:
 

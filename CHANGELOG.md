@@ -1,6 +1,17 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
+## 0.2.0 - 2017-4-9
+
+### Changed
+
+* Updated to [zprint "0.3.0"]
+
+* Note that while configuration from environment variables and Java system
+  properties still works in lein-zprint, that these capabilities are 
+  __DEPRECATED__ as of zprint "0.3.0", and will likely go away at some
+  point in the future.  If you care about them, file an issue!
+
 ## 0.1.16 - 2017-2-27
 
 ### Changed

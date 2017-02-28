@@ -8,12 +8,12 @@
 (defn lein-zprint-about
   "Return version of this program."
   []
-  (str "lein zprint " (version/get-version "lein-zprint" "lein-zprint")))
+  (str "lein-zprint-0.2.0")) 
 
 (defn zprint-about
   "Return version of zprint library program."
   []
-  (str "zprint-" (version/get-version "zprint" "zprint")))
+  (zc/about))
 
 (defn vec-str-to-str
   "Take a vector of strings and concatenate them into one string with
