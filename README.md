@@ -74,7 +74,7 @@ us all.
 
 _Wouldn't you really prefer a __Clojure uberjar__ which does the
 same thing, starts up as fast, and runs faster for moderate to
-large functions?  See [here](https://github.com/kkinnear/zprint/docs/filter.md)
+large functions?  See [here](https://github.com/kkinnear/zprint/blob/master/doc/filter.md)
 for how to get it!_
 
 With a very small amount of setup, you can create a script which
