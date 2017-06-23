@@ -1,4 +1,4 @@
-(defproject lein-zprint "0.3.2"
+(defproject lein-zprint "0.3.3"
   :description "Run zprint to pretty print source files in your project."
   :url "https://github.com/kkinnear/lein-zprint"
   :license {:name "MIT License"
@@ -10,7 +10,7 @@
   :zprint {:old? false}
   :eval-in-leiningen true
   :profiles {:dev {:dependencies [[expectations "2.0.16"]]}}
-  :dependencies [[zprint "0.4.2"]
+  :dependencies [[zprint "0.4.3"]
                  [clojure-future-spec "1.9.0-alpha17"]
                  [cprop "0.1.6"]
                  [me.raynes/fs "1.4.6"]])
