@@ -1,7 +1,6 @@
 (ns leiningen.zprint
   (:require [zprint.core :as zp :exclude [zprint]]
             [zprint.config :as zc]
-            [trptcolin.versioneer.core :as version]
             [me.raynes.fs :as fs])
   (:import [java.io File]))
 
