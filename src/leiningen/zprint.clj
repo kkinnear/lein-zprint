@@ -1,7 +1,6 @@
 (ns leiningen.zprint
   (:require [zprint.core :as zp :exclude [zprint]]
             [zprint.config :as zc]
-            [trptcolin.versioneer.core :as version]
             [me.raynes.fs :as fs])
   (:import [java.io File]))
 
@@ -25,7 +24,7 @@
 (defn common-cmd-str
   "Figure out a planck command string if possible."
   [cache-dir]
-  (let [cp (seq (.getURLs (java.lang.ClassLoader/getSystemClassLoader)))
+  (let [cp (seq (.getURLs (clojure.lang.RT/baseLoader)))
         paths (map #(.getPath %) cp)
         zprint-cp (first (filter #(re-find #"/zprint.*jar" %) paths))
         rewrite-cljs-cp (first (filter #(re-find #"rewrite-cljs.*jar" %)
