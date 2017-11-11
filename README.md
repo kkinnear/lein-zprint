@@ -31,10 +31,10 @@ Use `$HOME/.zprintrc` or a `:zprint {}` options map in your
 
 It is pretty straightforward to use lein zprint.
 
-Place `[lein-zprint "0.3.4"]` into the `:plugins` vector of your project.clj:
+Place `[lein-zprint "0.3.5"]` into the `:plugins` vector of your project.clj:
 
 ```
-:plugins [[lein-zprint "0.3.4"]]
+:plugins [[lein-zprint "0.3.5"]]
 ```
 
 Then, to format a source file, simply invoke `lein zprint` on that file: 
@@ -58,7 +58,7 @@ setting a zprint options map in your project.clj:
 
 ```
 ...
-:plugins [[lein-zprint "0.3.4"]]
+:plugins [[lein-zprint "0.3.5"]]
 :zprint {:old? false}
 ...
 ```
@@ -100,7 +100,7 @@ Here are the detailed instructions:
 
   1. Install [planck][planck-url] or [lumo][lumo-url].  
 
-  I have tried this planck v2, and lumo 1.2.0.  Do not
+  I have tried this with planck v2, and lumo 1.2.0.  Do not
   use earlier versions.
   
   Why choose one over the other?  If you already have one or the
@@ -109,8 +109,10 @@ Here are the detailed instructions:
   the not terribly rigorous testing I've done, lumo is almost twice
   as fast as planck -- but I found the planck version perfectly
   usable before I implemented the lumo version.   That said, I now
-  use the lumo version.  Both are easy to install and use, and I
-  highly recommend both projects.
+  use the zprint-filter using the JVM, documented over in zprint
+  itself, which is slightly faster than either. But both planck
+  and lumo are are easy to install and use, and I highly recommend 
+  both projects
 
   2. Figure out where you want to put the script so that it is on
   your path.  I put mine in ~/bin, for example, since that directory

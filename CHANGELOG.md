@@ -1,6 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
+## 0.3.5 - 2017-11-10
+
+### Fixed
+
+* Fix problem with leiningen 2.8.1 and :lumo-cmd-line and
+  :planck-cmd-line. Issue #2
+
 ## 0.3.4 - 2017-10-26
 
 ### Changed
