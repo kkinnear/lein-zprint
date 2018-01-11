@@ -529,6 +529,6 @@ from what you expected.
 
 ## License
 
-Copyright © 2016-2017 Kim Kinnear
+Copyright © 2016-2018 Kim Kinnear
 
 Distributed under the MIT License.  See the file LICENSE for details.

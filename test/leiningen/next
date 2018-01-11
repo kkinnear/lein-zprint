@@ -1,4 +1,5 @@
 ;!zprint {:format :next :width 40}
+
 (defn tstfn
   "This fn is designed to see if reader macros, specifically the
   anonymous fn one, works. Also tests uneval formatting."

@@ -9,7 +9,7 @@
             [lein-zprint "0.3.4"]]
   :zprint {:old? false}
   :eval-in-leiningen true
-  :profiles {:dev {:dependencies [[expectations "2.0.16"]]}}
+  :profiles {:dev {:dependencies [#_[expectations "2.0.16"] [expectations "2.2.0-rc3"]]}}
   :dependencies [[zprint "0.4.6"]
                  [clojure-future-spec "1.9.0-alpha17"]
                  [cprop "0.1.6"]
