@@ -6,7 +6,7 @@
 	    :key "mit"
 	    :year 2015}
   :plugins [[lein-expectations "0.0.8"]
-            [lein-zprint "0.3.4"]]
+            [lein-zprint "0.3.7"]]
   :zprint {:old? false}
   :eval-in-leiningen true
   :profiles {:dev {:dependencies [#_[expectations "2.0.16"] [expectations "2.2.0-rc3"]]}}

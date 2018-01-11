@@ -7,12 +7,9 @@
 (defn lein-zprint-about
   "Return version of this program."
   []
-  (str "lein-zprint-0.3.7")) 
+  (str "lein-zprint-0.3.7"))
 
-(defn zprint-about
-  "Return version of zprint library program."
-  []
-  (zc/about))
+(defn zprint-about "Return version of zprint library program." [] (zc/about))
 
 (defn vec-str-to-str
   "Take a vector of strings and concatenate them into one string with
