@@ -1,6 +1,17 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
+## 0.3.8 - 2018-2-19
+
+### Changed
+
+* Updated to [zprint "0.4.7"]
+
+### Fixed
+
+* Force setting of `:parallel?` for each function.  Saves
+  maybe 20% of time on longer files with big functions.
+
 ## 0.3.7 - 2018-1-10
 
 ### Changed

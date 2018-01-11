@@ -7,7 +7,7 @@
 (defn lein-zprint-about
   "Return version of this program."
   []
-  (str "lein-zprint-0.3.7"))
+  (str "lein-zprint-0.3.8"))
 
 (defn zprint-about "Return version of zprint library program." [] (zc/about))
 
@@ -130,6 +130,7 @@
                 old-file (str file-spec ".old")]
             (println "Processing file:" file-spec)
             (try (zp/configure-all!)
+                 (zp/set-options! {:parallel? true} "lein-zprint internal")
                  (zp/set-options! project-options ":zprint map in project.clj")
                  (zp/set-options! line-options "lein zprint command line")
                  (zp/zprint-file file-spec (fs/base-name file-spec) tmp-file)
@@ -152,7 +153,9 @@
   map and subsequent files are pretty printed with those options."
   [project & args]
   (let [project-options (:zprint project)
-        ; do the project options here, so we see if they work
+        ; All of these options will be reset by zprint-one-file, but we
+        ; do them here to see if they work, and for :explain output.
+        _ (zp/set-options! {:parallel? true} "lein-zprint internal")
         _ (when project-options
             (zp/set-options! project-options ":zprint map in project.clj"))
         arg1 (try (read-string (first args)) (catch Exception e nil))
@@ -205,4 +208,5 @@
                  "files with .old extensions.")
         (println
           "To disable rename, add :zprint {:old? false} to your project.clj.")))
-    (flush)))
+    (flush)
+    (shutdown-agents)))

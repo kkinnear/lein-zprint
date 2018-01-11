@@ -31,10 +31,10 @@ Use `$HOME/.zprintrc` or a `:zprint {}` options map in your
 
 It is pretty straightforward to use lein zprint.
 
-Place `[lein-zprint "0.3.7"]` into the `:plugins` vector of your project.clj:
+Place `[lein-zprint "0.3.8"]` into the `:plugins` vector of your project.clj:
 
 ```
-:plugins [[lein-zprint "0.3.7"]]
+:plugins [[lein-zprint "0.3.8"]]
 ```
 
 Then, to format a source file, simply invoke `lein zprint` on that file: 
@@ -58,7 +58,7 @@ setting a zprint options map in your project.clj:
 
 ```
 ...
-:plugins [[lein-zprint "0.3.7"]]
+:plugins [[lein-zprint "0.3.8"]]
 :zprint {:old? false}
 ...
 ```
@@ -147,7 +147,7 @@ planck -s -k /Users/kkinnear/bin/planck-cache -c /Users/kkinnear/.m2/repository/
   Lumo:
 
   ```
-lumo -k /Users/kkinnear/bin/planck-cache -c /Users/kkinnear/.m2/repository/zprint/zprint/0.4.3/zprint-0.4.3.jar:/Users/kkinnear/.m2/repository/rewrite-cljs/rewrite-cljs/0.4.4/rewrite-cljs-0.4.4.jar -m zprint.lumo
+lumo -k /Users/kkinnear/bin/lumo-cache -c /Users/kkinnear/.m2/repository/zprint/zprint/0.4.3/zprint-0.4.3.jar:/Users/kkinnear/.m2/repository/rewrite-cljs/rewrite-cljs/0.4.4/rewrite-cljs-0.4.4.jar -m zprint.lumo
   ```
 
   5. Once you get to that point, type the command line again, and
