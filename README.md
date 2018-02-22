@@ -31,10 +31,10 @@ Use `$HOME/.zprintrc` or a `:zprint {}` options map in your
 
 It is pretty straightforward to use lein zprint.
 
-Place `[lein-zprint "0.3.8"]` into the `:plugins` vector of your project.clj:
+Place `[lein-zprint "0.3.9"]` into the `:plugins` vector of your project.clj:
 
 ```
-:plugins [[lein-zprint "0.3.8"]]
+:plugins [[lein-zprint "0.3.9"]]
 ```
 
 Then, to format a source file, simply invoke `lein zprint` on that file: 
@@ -58,7 +58,7 @@ setting a zprint options map in your project.clj:
 
 ```
 ...
-:plugins [[lein-zprint "0.3.8"]]
+:plugins [[lein-zprint "0.3.9"]]
 :zprint {:old? false}
 ...
 ```
@@ -141,13 +141,13 @@ Here are the detailed instructions:
   Planck:
 
   ```
-planck -s -k /Users/kkinnear/bin/planck-cache -c /Users/kkinnear/.m2/repository/zprint/zprint/0.4.3/zprint-0.4.3.jar:/Users/kkinnear/.m2/repository/rewrite-cljs/rewrite-cljs/0.4.4/rewrite-cljs-0.4.4.jar -m zprint.planck
+planck -s -k /Users/kkinnear/bin/planck-cache -c /Users/kkinnear/.m2/repository/zprint/zprint/0.4.8/zprint-0.4.8.jar:/Users/kkinnear/.m2/repository/rewrite-cljs/rewrite-cljs/0.4.4/rewrite-cljs-0.4.4.jar -m zprint.planck
   ```
 
   Lumo:
 
   ```
-lumo -k /Users/kkinnear/bin/lumo-cache -c /Users/kkinnear/.m2/repository/zprint/zprint/0.4.3/zprint-0.4.3.jar:/Users/kkinnear/.m2/repository/rewrite-cljs/rewrite-cljs/0.4.4/rewrite-cljs-0.4.4.jar -m zprint.lumo
+lumo -k /Users/kkinnear/bin/lumo-cache -c /Users/kkinnear/.m2/repository/zprint/zprint/0.4.8/zprint-0.4.8.jar:/Users/kkinnear/.m2/repository/rewrite-cljs/rewrite-cljs/0.4.4/rewrite-cljs-0.4.4.jar -m zprint.lumo
   ```
 
   5. Once you get to that point, type the command line again, and
@@ -263,7 +263,7 @@ variables cannot be used.
   instance (this is a very long line, scroll right all the way):
 
   ```
-planck -s -k /Users/kkinnear/bin/planck-cache -c /Users/kkinnear/.m2/repository/zprint/zprint/0.4.3/zprint-0.4.3.jar:/Users/kkinnear/.m2/repository/rewrite-cljs/rewrite-cljs/0.4.4/rewrite-cljs-0.4.4.jar -m zprint.planck '{:width 90}'
+planck -s -k /Users/kkinnear/bin/planck-cache -c /Users/kkinnear/.m2/repository/zprint/zprint/0.4.8/zprint-0.4.8.jar:/Users/kkinnear/.m2/repository/rewrite-cljs/rewrite-cljs/0.4.4/rewrite-cljs-0.4.4.jar -m zprint.planck '{:width 90}'
   ```
   would cause all of the code piped through this script to be formatted for
   a width of 90, and not 80.  Don't forget the single quotes!
@@ -313,7 +313,7 @@ of the `:version` key:
 {...
  :user-fn-map {},
  :vector {:indent 1, :wrap-after-multi? true, :wrap-coll? true, :wrap? true},
- :version "zprint-0.4.3",
+ :version "zprint-0.4.8",
  :width 80}
 ```
 
