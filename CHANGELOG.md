@@ -1,11 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
-## 0.3.9 - 2018-5-13
+## 0.3.9 - 2018-5-15
 
 ### Changed
 
-* Updated to [zprint "0.4.8"]
+* Updated to [zprint "0.4.9"]
 
 ## 0.3.8 - 2018-2-19
 
