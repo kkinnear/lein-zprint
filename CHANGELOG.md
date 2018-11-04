@@ -1,11 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
-## 0.3.11 - 2018-10-31
+## 0.3.11 - 2018-11-6
 
 ### Changed
 
 * Updated to [zprint "0.4.12"]
+
+* Added test for ;!zprint support which allows any number of ;
 
 ## 0.3.11 - 2018-10-28
 
