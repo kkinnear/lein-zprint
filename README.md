@@ -15,14 +15,26 @@ Use boot instead of Leiningen?  No problem, use: [boot-fmt][bootfmt]
 different command line arguments. You might find
 it more to your liking even if you use Leiningen.
 
+If you would prefer a standalone program that accepts Clojure(script)
+source and emits formatted Clojure(script) source, starts up faster
+than 55ms, and runs faster than anything using Javascript (e.g. node.js),
+look here 
+[here](https://github.com/kkinnear/zprint/blob/master/doc/graalvm.md)
+for information!
+
 The zprint library itself is highly configurable, allowing you to
 tune the formatting.  Note that as of zprint 0.3.0 (and lein-zprint
 0.2.0) configuring zprint (and by extension lein-zprint) from system
-environment variables and Java system properties is __DEPRECATED__,
-though both will still work for the present with lein-zprint.
+environment variables and Java system properties is __DEPRECATED__.
 
-Use `$HOME/.zprintrc` or a `:zprint {}` options map in your
-`project.clj` file to configure lein-zprint. 
+To configure lein-zprint:
+
+* Use `$HOME/.zprintrc` or `$HOME/.zprint.edn`
+* Define `:search-config?` as `true` in your `$HOME/.zprintrc` or 
+`$HOME/.zprint.edn` file, and then configure a `.zprintrc` or `.zprint.edn`
+file in the current directory or any parent of that directory.  Zprint will
+use the first file it finds when searching up from the current directory.
+* Place a `:zprint {}` options map in your `project.clj` file
 
 [bootfmt]: https://github.com/pesterhazy/boot-fmt
 
@@ -31,10 +43,10 @@ Use `$HOME/.zprintrc` or a `:zprint {}` options map in your
 
 It is pretty straightforward to use lein zprint.
 
-Place `[lein-zprint "0.3.13"]` into the `:plugins` vector of your project.clj:
+Place `[lein-zprint "0.3.14"]` into the `:plugins` vector of your project.clj:
 
 ```
-:plugins [[lein-zprint "0.3.13"]]
+:plugins [[lein-zprint "0.3.14"]]
 ```
 
 Then, to format a source file, simply invoke `lein zprint` on that file: 
@@ -58,7 +70,7 @@ setting a zprint options map in your project.clj:
 
 ```
 ...
-:plugins [[lein-zprint "0.3.13"]]
+:plugins [[lein-zprint "0.3.14"]]
 :zprint {:old? false}
 ...
 ```

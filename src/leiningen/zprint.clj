@@ -7,7 +7,7 @@
 (defn lein-zprint-about
   "Return version of this program."
   []
-  (str "lein-zprint-0.3.13"))
+  (str "lein-zprint-0.3.14"))
 
 (defn zprint-about "Return version of zprint library program." [] (zc/about))
 
@@ -76,9 +76,15 @@
      ""
      " To configure lein zprint, you can:"
      ""
-     "   - create a $HOME/.zprintrc file containing a zprint options map"
-     "   - define environment variables as described in the zprint doc"
-     "   - add a :zprint {<options-map>} to project.clj"
+     "   - create a $HOME/.zprintrc file or a $HOME/.zprint.edn file"
+     "     containing a zprint options map"
+     "   - define :search-config? as true in the $HOME/.zprintrc or"
+     "     $HOME/.zprint.edn file, and zprint will search for a"
+     "     .zprintrc or .zprint.edn file in the current directory"
+     "     and if it doesn't find one, in the parent of that directory,"
+     "     all the way to the root directory, stopping when it finds a"
+     "     configuration file."
+     "   - add a :zprint {<options-map>} pair to the map in project.clj"
      "   - place a number first in the arguments, which will become the width"
      "   - place an options map (surrounded by double quotes) first in the"
      "     arguments, which will be used to configure zprint (if there is a"
