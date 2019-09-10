@@ -123,3 +123,55 @@
 
 (expect ":planck-cmd-line requires a cache-dir!\n"
         (with-out-str (zprint {} ":planck-cmd-line")))
+
+
+;----------------------
+
+;;
+;; # Command tests
+;;
+;; Note: not all of these are documented
+;;
+
+(expect
+  "java.lang.Exception: Command line input '{:width 20}' conflicted with input from project.clj file '{:command :default, :old? false}'!"
+  (try (leiningen.zprint/zprint {:zprint {:command :default, :old? false}}
+                                "{:width 20}"
+                                "test/leiningen/keepspace.in")
+       (catch Exception e (str e))))
+
+
+(expect
+"java.lang.Exception: If key :command appears in an options map the only other allowed keys are :old? and :parallel?, instead found: {:old? false, :command :default, :width 20}"
+  (try (leiningen.zprint/zprint {:zprint
+                                   {:old? false, :command :default, :width 20}}
+                                "test/leiningen/keepspace.in")
+       (catch Exception e (str e))))
+
+
+(fs/copy "test/leiningen/dropspace" "test/leiningen/dropspace2.in")
+
+(leiningen.zprint/zprint {:zprint {:old? false :parallel? false}}
+			 "-d"
+                         "test/leiningen/dropspace2.in")
+
+(expect (slurp "test/leiningen/dropspace2.out")
+        (slurp "test/leiningen/dropspace2.in"))
+
+(fs/copy "test/leiningen/dropspace" "test/leiningen/dropspace3.in")
+
+(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
+			 "--default"
+                         "test/leiningen/dropspace3.in")
+
+(expect (slurp "test/leiningen/dropspace3.out")
+        (slurp "test/leiningen/dropspace3.in"))
+
+(fs/copy "test/leiningen/dropspace" "test/leiningen/dropspace4.in")
+
+(expect "java.lang.Exception: Unknown switch '--stuff'"
+        (try (leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
+                                      "--stuff"
+                                      "test/leiningen/dropspace4.in")
+             (catch Exception e (str e))))
+

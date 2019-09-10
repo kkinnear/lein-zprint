@@ -7,6 +7,18 @@ All notable changes to this project will be documented in this file.
 
 * Updated to [zprint "0.4.17"]
 
+### Added
+
+* Limited configuration -- command line options `-d` or `--default`, or
+  `:zprint` map in the `project.clj` file containing `:command :default`.
+
+  If you specify default configuration lein-zprint will ignore all
+  external configuration, including the `$HOME/.zprintrc` file and
+  most of the information in the `:zprint` key in the `project.clj` file.
+  The only external configuation it will accept (which doesn't affect
+  the formatting) is the `:old?` key in the `:zprint` map in the
+  `project.clj` file.
+
 ## 0.3.16 - 2019-6-12
 
 ### Changed

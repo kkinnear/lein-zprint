@@ -76,6 +76,9 @@
      ""
      " To configure lein zprint, you can:"
      ""
+     "   - invoke lein-zprint with a switch:"
+     "        lein zprint -d filename1 filename2 ..."
+     "        Supported switches are: -d and --default, see below..."
      "   - create a $HOME/.zprintrc file or a $HOME/.zprint.edn file"
      "     containing a zprint options map"
      "   - define :search-config? as true in the $HOME/.zprintrc or"
@@ -89,6 +92,15 @@
      "   - place an options map (surrounded by double quotes) first in the"
      "     arguments, which will be used to configure zprint (if there is a"
      "     number first, the map can be second in the arguments)"
+     ""
+     " A small number of command line switches are supported:"
+     ""
+     "  -d --default     Ignore external configuration and format based"
+     "                   only on defaults and ;!zprint directives in the"
+     "                   file.  The only thing in the :zprint map in the"
+     "                   project.clj file that is recognized is the :old?"
+     "                   key, all other keys ignored. $HOME/.zprintrc is"
+     "                   also ignored."
      ""
      " You can place the token :explain anywhere you can place a file name"
      " and the current options will be output to standard out."
@@ -118,39 +130,134 @@
      " You can type: lein zprint :help to get this text."
      ""]))
 
+(defn get-switch
+  "Given an options, get a switch out of it if there is one to get.  Throw
+  an exception for a bad switch. Returns [switch old?], where old is
+  the value of :old if options is a map."
+  [options]
+  (cond
+    (string? options)
+      (if (clojure.string/starts-with? options "-")
+        (cond (or (= options "--default") (= options "-d")) [:default nil]
+              #_#_(or (= options "--standard") (= options "-s")) [:standard nil]
+              :else (throw (Exception. (str "Unknown switch '" options "'")))))
+    (map options)
+      (when (:command options)
+        (let [command (:command options)
+              option-keys (keys options)]
+          (if (or (= command :default) (= command :standard))
+            (if (= (count option-keys)
+                   (count (filter #{:old? :parallel? :command} option-keys)))
+              [command (:old? options)]
+              (throw
+                (Exception. (str "If key :command appears in an options map"
+                                   " the only other allowed keys are :old? and"
+                                 " :parallel?, instead found: " options))))
+            (throw (Exception. (str "Unknown switch '" options "'"))))))
+    :else (throw (Exception. (str "Options '"
+                                  options
+                                  "' must be either a map or a string")))))
+
+(defn process-options-as-switches
+  "Take the project-options and line-options, and look for switches.  If
+  switches are found (and don't conflict with each other), then return
+  :default, :standard, or nil.  Throw an exception for a problem.  If 
+  line-options has switch, ignore project-options if it is not a command,
+  but if it is a command, it must match line-options.  If project-options has
+  a command, then fail if line-options has something that is not the same
+  switch. Pull :old out of project options if it contains a command and
+  return it in old?. Returns [switch old?]."
+  [project-options line-options]
+  (cond
+    (not (empty? line-options))
+      (let [[line-switch line-old?] (get-switch line-options)
+            [project-switch project-old?] (get-switch project-options)
+            project-old? (or project-old?
+                             (when (map? project-options)
+                                  (:old? project-options)))]
+	#_(println "project-old?:" project-old? project-options)
+        (if line-switch
+          ; If project-options were a switch, then we will require
+          ; line and project options have the same switch.
+          ; If project-options was a options map, then we will ignore it.
+          (if project-switch
+            (if (= line-switch project-switch)
+              [line-switch (or line-old? project-old?)]
+              (throw (Exception. (str "Command line input '"
+                                      line-options
+                                      "' conflicted with input from project.clj"
+                                      " file '"
+                                      project-options
+                                      "'!"))))
+            [line-switch (or line-old? project-old?)])
+          ; We had line-options, but not a switch.  If we have
+          ; a project switch, that is a error.  Project options are fine.
+          (when project-switch
+            (throw (Exception. (str "Command line input '"
+                                    line-options
+                                    "' conflicted with input from project.clj"
+                                    " file '"
+                                    project-options
+                                    "'!"))))))
+    ; We just have project-options, no line-options, so this is easy. It
+    ; is either a switch or options.!
+    (not (empty? project-options)) (get-switch project-options)
+    :else nil))
+
 (defn zprint-one-file
   "Take a file name, possibly including a path, and zprint that one file."
   [project-options line-options file-spec]
-  (cond (= file-spec ":explain") (do (println (lein-zprint-about))
-                                     (println (zprint-about))
-                                     (zp/czprint nil :explain))
-        (= file-spec ":support") (do (println (lein-zprint-about))
-                                     (println (zprint-about))
-                                     (zp/czprint nil :support))
-        (= file-spec ":about") (println (lein-zprint-about))
-        (= file-spec ":help") (println help-str)
-        :else
-          (let [parent-path (fs/parent file-spec)
-                tmp-name (fs/temp-name "zprint")
-                tmp-file (str parent-path File/separator tmp-name)
-                old-file (str file-spec ".old")]
-            (println "Processing file:" file-spec)
-            (try (zp/configure-all!)
-                 (zp/set-options! {:parallel? true} "lein-zprint internal")
-                 (zp/set-options! project-options ":zprint map in project.clj")
-                 (zp/set-options! line-options "lein zprint command line")
-                 (zp/zprint-file file-spec (fs/base-name file-spec) tmp-file)
-                 (when (:old? (zc/get-options))
-                   (fs/delete old-file)
-                   (fs/rename file-spec old-file))
-                 (fs/rename tmp-file file-spec)
-                 (when (:old? (zc/get-options)) old-file)
-                 (catch Exception e
-                   (println (str "Unable to process file: "
-                                 file-spec
-                                 " because: "
-                                 e
-                                 " Leaving it unchanged!")))))))
+  (cond
+    (= file-spec ":explain") (do (println (lein-zprint-about))
+                                 (println (zprint-about))
+                                 (zp/czprint nil :explain))
+    (= file-spec ":support") (do (println (lein-zprint-about))
+                                 (println (zprint-about))
+                                 (zp/czprint nil :support))
+    (= file-spec ":about") (println (lein-zprint-about))
+    (= file-spec ":help") (println help-str)
+    :else
+      (let [parent-path (fs/parent file-spec)
+            tmp-name (fs/temp-name "zprint")
+            tmp-file (str parent-path File/separator tmp-name)
+            old-file (str file-spec ".old")]
+        (println "Processing file:" file-spec)
+        (let [[switch old?] (process-options-as-switches project-options
+                                                         line-options)
+	      ; If old? is nil (or, really, not false), then we want to 
+	      ; default it to true.  False means we explicitly found it
+	      ; set to false somewhere, nil means that we didn't see anything
+	      ; about it one way or the other.
+	      old? (if-not (false? old?) true)
+	      parallel? (get project-options :parallel? true)]
+          (try
+            (case switch
+              :default (zp/set-options! {:configured? true,
+                                         :additional-libraries? false,
+                                         :parallel? parallel?,
+                                         :old? old?})
+              #_#_:standard
+                (zp/set-options! {:configured? true,
+                                  :style :standard,
+                                  :additional-libraries? false,
+                                  :parallel? parallel?,
+                                  :old? old?})
+              (do (zp/configure-all!)
+                  (zp/set-options! {:parallel? true} "lein-zprint internal")
+                  (zp/set-options! project-options ":zprint map in project.clj")
+                  (zp/set-options! line-options "lein zprint command line")))
+            (zp/zprint-file file-spec (fs/base-name file-spec) tmp-file)
+            (when (:old? (zc/get-options))
+              (fs/delete old-file)
+              (fs/rename file-spec old-file))
+            (fs/rename tmp-file file-spec)
+            (when (:old? (zc/get-options)) old-file)
+            (catch Exception e
+              (println (str "Unable to process file: "
+                            file-spec
+                            " because: "
+                            e
+                            " Leaving it unchanged!"))))))))
 
 (defn ^:no-project-needed zprint
   "Pretty-print all of the arguments that are not a map, replacing the
@@ -159,11 +266,6 @@
   map and subsequent files are pretty printed with those options."
   [project & args]
   (let [project-options (:zprint project)
-        ; All of these options will be reset by zprint-one-file, but we
-        ; do them here to see if they work, and for :explain output.
-        _ (zp/set-options! {:parallel? true} "lein-zprint internal")
-        _ (when project-options
-            (zp/set-options! project-options ":zprint map in project.clj"))
         arg1 (try (read-string (first args)) (catch Exception e nil))
         [line-options args]
           (cond
@@ -202,16 +304,36 @@
                                     "' must already exist, and it does not!")))
                     (println ":lumo-cmd-line requires a cache-dir!")))
                 [nil nil])
-            :else [{} args])]
-    (when line-options
-      (zp/set-options! line-options "lein zprint command line"))
+            (clojure.string/starts-with? (first args) "-") [(first args)
+                                                            (next args)]
+            :else [{} args])
+        [switch _] (process-options-as-switches project-options line-options)]
+    ; All of these options will be reset by zprint-one-file, but we
+    ; do them here to see if they work, and for :explain output.
+    (case switch
+      :default (zp/set-options! {:configured? true,
+                                 :additional-libraries? false,
+                                 :parallel? true})
+      #_#_:standard
+        (zp/set-options! {:configured? true,
+                          :style :standard,
+                          :additional-libraries? false,
+                          :parallel? true})
+      ; Regular, not switch processing
+      (do (zp/set-options! {:parallel? true} "lein-zprint internal")
+          (when project-options
+            (zp/set-options! project-options ":zprint map in project.clj"))
+          (when line-options
+            (zp/set-options! line-options "lein zprint command line"))))
     (let [old-files (mapv #(zprint-one-file project-options line-options %)
                       args)
           old-files (remove nil? old-files)]
       (when-not (empty? old-files)
-        (println "Renamed original"
+        (println "Renamed"
                  (count old-files)
-                 "files with .old extensions.")
+                 (str "original file"
+                      (if (> (count old-files) 1) "s" "")
+                      " with .old extensions."))
         (println
           "To disable rename, add :zprint {:old? false} to your project.clj.")))
     (flush)

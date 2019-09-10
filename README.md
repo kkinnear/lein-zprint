@@ -23,11 +23,9 @@ look here
 for information!
 
 The zprint library itself is highly configurable, allowing you to
-tune the formatting.  Note that as of zprint 0.3.0 (and lein-zprint
-0.2.0) configuring zprint (and by extension lein-zprint) from system
-environment variables and Java system properties is __DEPRECATED__.
+tune the formatting.  
 
-To configure lein-zprint:
+## To configure lein-zprint in its normal, highly configurable way:
 
 * Use `$HOME/.zprintrc` or `$HOME/.zprint.edn`
 * Define `:search-config?` as `true` in your `$HOME/.zprintrc` or 
@@ -35,6 +33,37 @@ To configure lein-zprint:
 file in the current directory or any parent of that directory.  Zprint will
 use the first file it finds when searching up from the current directory.
 * Place a `:zprint {}` options map in your `project.clj` file
+
+
+## Limiting Configuration for lein-zprint
+
+Note that some people want a formatter which is less configurable.
+To that end, lein-zprint will also support specification of its operation
+with only very small number of fixed configurations.  At present, the
+only fixed configuration is __default__, where lein-zprint will accept
+no external configuration, and will format based only on the default
+configuration and the information in the file.  
+
+If you specify default configuration lein-zprint will ignore all
+external configuration, including the `$HOME/.zprintrc` file and
+most of the information in the `:zprint` key in the `project.clj` file.
+The only external configuation it will accept (which doesn't affect
+the formatting) is the `:old?` key in the `:zprint` map in the
+`project.clj` file.
+
+This default configuration is available in two ways:
+
+  * If you specify "-d" or "--default" on the command line in place of
+    an options map. 
+
+  * If you specify `:command :default` in the `:zprint` map in the
+    `project.clj` file.  Note that you cannot specify this in the
+    `$HOME/.zprintrc` file, it is only available to the `:zprint`
+    map in the `project.clj` file!  By using this approach, a project
+    can enforce formatting that is not affected by a users default
+    zprint configuration or by any options map given on the lein
+    zprint command line.
+
 
 [bootfmt]: https://github.com/pesterhazy/boot-fmt
 
