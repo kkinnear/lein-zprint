@@ -48,8 +48,8 @@ If you specify default configuration lein-zprint will ignore all
 external configuration, including the `$HOME/.zprintrc` file and
 most of the information in the `:zprint` key in the `project.clj` file.
 The only external configuation it will accept (which doesn't affect
-the formatting) is the `:old?` key in the `:zprint` map in the
-`project.clj` file.
+the formatting) are the `:old?` and `:parallel?` keys in the `:zprint` 
+map in the `project.clj` file.
 
 This default configuration is available in two ways:
 
