@@ -7,7 +7,7 @@
 (defn lein-zprint-about
   "Return version of this program."
   []
-  (str "lein-zprint-0.3.17"))
+  (str "lein-zprint-0.5.0"))
 
 (defn zprint-about "Return version of zprint library program." [] (zc/about))
 
@@ -174,8 +174,8 @@
             [project-switch project-old?] (get-switch project-options)
             project-old? (or project-old?
                              (when (map? project-options)
-                                  (:old? project-options)))]
-	#_(println "project-old?:" project-old? project-options)
+                               (:old? project-options)))]
+        #_(println "project-old?:" project-old? project-options)
         (if line-switch
           ; If project-options were a switch, then we will require
           ; line and project options have the same switch.
@@ -224,22 +224,19 @@
         (println "Processing file:" file-spec)
         (let [[switch old?] (process-options-as-switches project-options
                                                          line-options)
-	      ; If old? is nil (or, really, not false), then we want to 
-	      ; default it to true.  False means we explicitly found it
-	      ; set to false somewhere, nil means that we didn't see anything
-	      ; about it one way or the other.
-	      old? (if-not (false? old?) true)
-	      parallel? (get project-options :parallel? true)]
+              ; If old? is nil (or, really, not false), then we want to
+              ; default it to true.  False means we explicitly found it
+              ; set to false somewhere, nil means that we didn't see anything
+              ; about it one way or the other.
+              old? (if-not (false? old?) true)
+              parallel? (get project-options :parallel? true)]
           (try
             (case switch
-              :default (zp/set-options! {:configured? true,
-                                         :additional-libraries? false,
-                                         :parallel? parallel?,
-                                         :old? old?})
+              :default (zp/set-options!
+                         {:configured? true, :parallel? parallel?, :old? old?})
               #_#_:standard
                 (zp/set-options! {:configured? true,
                                   :style :standard,
-                                  :additional-libraries? false,
                                   :parallel? parallel?,
                                   :old? old?})
               (do (zp/configure-all!)
@@ -311,14 +308,9 @@
     ; All of these options will be reset by zprint-one-file, but we
     ; do them here to see if they work, and for :explain output.
     (case switch
-      :default (zp/set-options! {:configured? true,
-                                 :additional-libraries? false,
-                                 :parallel? true})
+      :default (zp/set-options! {:configured? true, :parallel? true})
       #_#_:standard
-        (zp/set-options! {:configured? true,
-                          :style :standard,
-                          :additional-libraries? false,
-                          :parallel? true})
+        (zp/set-options! {:configured? true, :style :standard, :parallel? true})
       ; Regular, not switch processing
       (do (zp/set-options! {:parallel? true} "lein-zprint internal")
           (when project-options

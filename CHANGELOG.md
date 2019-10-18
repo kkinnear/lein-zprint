@@ -1,11 +1,15 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
-## 0.3.17 - 2019-6-12
+## 0.5.0 - 2019-10-22
 
 ### Changed
 
-* Updated to [zprint "0.4.17"]
+* Updated to [zprint "0.5.0"]
+
+* Changed version number to match the version of zprint used ("0.5.0"), 
+  instead of lagging behind by one version. So there was no version 
+  `0.4.x` for lein zprint.  
 
 ### Added
 
