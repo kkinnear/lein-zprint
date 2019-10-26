@@ -72,10 +72,10 @@ This default configuration is available in two ways:
 
 It is pretty straightforward to use lein zprint.
 
-Place `[lein-zprint "0.5.0"]` into the `:plugins` vector of your project.clj:
+Place `[lein-zprint "0.5.1"]` into the `:plugins` vector of your project.clj:
 
 ```
-:plugins [[lein-zprint "0.5.0"]]
+:plugins [[lein-zprint "0.5.1"]]
 ```
 
 Then, to format a source file, simply invoke `lein zprint` on that file: 
@@ -99,7 +99,7 @@ setting a zprint options map in your project.clj:
 
 ```
 ...
-:plugins [[lein-zprint "0.5.0"]]
+:plugins [[lein-zprint "0.5.1"]]
 :zprint {:old? false}
 ...
 ```
