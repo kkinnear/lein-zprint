@@ -118,11 +118,12 @@
 ;--------------------------
 
 (expect
-  ":planck-cmd-line cache directory 'sr' must already exist, and it does not!\n"
+  ":planck-cmd-line has been removed. The last version to support :planck-cmd-line was 0.5.0 for both lein-zprint and zprint.\n"
   (with-out-str (zprint {} ":planck-cmd-line" "sr")))
 
-(expect ":planck-cmd-line requires a cache-dir!\n"
-        (with-out-str (zprint {} ":planck-cmd-line")))
+(expect
+  ":planck-cmd-line has been removed. The last version to support :planck-cmd-line was 0.5.0 for both lein-zprint and zprint.\n"
+  (with-out-str (zprint {} ":planck-cmd-line")))
 
 
 ;----------------------

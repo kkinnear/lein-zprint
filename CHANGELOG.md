@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file.
 
 * Updated to [zprint "0.5.1"]
 
+* Removed planck and lumo zprint filter command line creation.
+
 ### Added
 
 ## 0.5.0 - 2019-10-19

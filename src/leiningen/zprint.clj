@@ -64,16 +64,6 @@
      " Make sure you run lein zprint with the current directory set to"
      " the directory containing your project.clj file."
      ""
-     " To have lein-zprint output a string which you can use as a "
-     " zprint pretty print filter:"
-     ""
-     "    lein zprint :planck-cmd-line <cache-dir>"
-     "    lein zprint :lumo-cmd-line <cache-dir>"
-     ""
-     " where <cache-dir> is a directory that exists that can hold the"
-     " Javascript files that planck or lumo will generate. See the readme"
-     " for additional details."
-     ""
      " To configure lein zprint, you can:"
      ""
      "   - invoke lein-zprint with a switch:"
@@ -274,33 +264,16 @@
                                    :else [{:width arg1} (next args)])
                              [{:width arg1} (next args)])
             (= :planck-cmd-line arg1)
-              (do
-                (let [cache-dir (first (next args))
-                      full-cache-dir (str (fs/file cache-dir))]
-                  (if cache-dir
-                    (if (fs/exists? full-cache-dir)
-                      (println (str "planck -s "
-                                    (common-cmd-str full-cache-dir)
-                                    " zprint.planck"))
-                      (println (str ":planck-cmd-line cache directory '"
-                                    cache-dir
-                                    "' must already exist, and it does not!")))
-                    (println ":planck-cmd-line requires a cache-dir!")))
-                [nil nil])
+	      (do (println (str ":planck-cmd-line has been removed. "
+	                        "The last version to support :planck-cmd-line "
+	                        "was 0.5.0 for both lein-zprint and zprint."))
+		  [nil nil])
             (= :lumo-cmd-line arg1)
-              (do
-                (let [cache-dir (first (next args))
-                      full-cache-dir (str (fs/file cache-dir))]
-                  (if cache-dir
-                    (if (fs/exists? full-cache-dir)
-                      (println (str "lumo "
-                                    (common-cmd-str full-cache-dir)
-                                    " zprint.lumo"))
-                      (println (str ":lumo-cmd-line cache directory '"
-                                    cache-dir
-                                    "' must already exist, and it does not!")))
-                    (println ":lumo-cmd-line requires a cache-dir!")))
-                [nil nil])
+	      (do (println (str ":lumo-cmd-line has been removed. "
+	                        "The last version to support :lumo-cmd-line "
+	                        "was 0.5.0 for both lein-zprint and zprint, "
+				"but required an older version of lumo." ))
+		  [nil nil])
             (clojure.string/starts-with? (first args) "-") [(first args)
                                                             (next args)]
             :else [{} args])
