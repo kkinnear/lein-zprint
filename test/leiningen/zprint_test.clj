@@ -143,7 +143,7 @@
 
 
 (expect
-"java.lang.Exception: If key :command appears in an options map the only other allowed keys are :old? and :parallel?, instead found: {:old? false, :command :default, :width 20}"
+  "java.lang.Exception: If key :command appears in an options map the only other allowed keys are :old? and :parallel?, instead found: {:old? false, :command :default, :width 20}"
   (try (leiningen.zprint/zprint {:zprint
                                    {:old? false, :command :default, :width 20}}
                                 "test/leiningen/keepspace.in")
@@ -152,8 +152,8 @@
 
 (fs/copy "test/leiningen/dropspace" "test/leiningen/dropspace2.in")
 
-(leiningen.zprint/zprint {:zprint {:old? false :parallel? false}}
-			 "-d"
+(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
+                         "-d"
                          "test/leiningen/dropspace2.in")
 
 (expect (slurp "test/leiningen/dropspace2.out")
@@ -162,7 +162,7 @@
 (fs/copy "test/leiningen/dropspace" "test/leiningen/dropspace3.in")
 
 (leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
-			 "--default"
+                         "--default"
                          "test/leiningen/dropspace3.in")
 
 (expect (slurp "test/leiningen/dropspace3.out")
@@ -175,4 +175,3 @@
                                       "--stuff"
                                       "test/leiningen/dropspace4.in")
              (catch Exception e (str e))))
-

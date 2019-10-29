@@ -17,23 +17,6 @@
   [vec-str]
   (apply str (interpose "\n" vec-str)))
 
-
-(defn common-cmd-str
-  "Figure out a planck command string if possible."
-  [cache-dir]
-  (let [cp (seq (.getURLs (clojure.lang.RT/baseLoader)))
-        paths (map #(.getPath %) cp)
-        zprint-cp (first (filter #(re-find #"/zprint.*jar" %) paths))
-        rewrite-cljs-cp (first (filter #(re-find #"rewrite-cljs.*jar" %)
-                                 paths))]
-    (cond (and (nil? zprint-cp) (nil? rewrite-cljs-cp))
-            "Cannot find classpath for both zprint and rewrite-cljs .jar files!"
-          (nil? zprint-cp) "Unable to determine classpath for zprint .jar file!"
-          (nil? rewrite-cljs-cp)
-            "Unable to determine classpath for rewrite-cljs .jar file!"
-          :else
-            (str "-k " cache-dir " -c " zprint-cp ":" rewrite-cljs-cp " -m"))))
-
 ;!zprint {:format :next :vector {:wrap? false}}
 (def help-str
   (vec-str-to-str
@@ -197,54 +180,59 @@
 (defn zprint-one-file
   "Take a file name, possibly including a path, and zprint that one file."
   [project-options line-options file-spec]
-  (cond
-    (= file-spec ":explain") (do (println (lein-zprint-about))
-                                 (println (zprint-about))
-                                 (zp/czprint nil :explain))
-    (= file-spec ":support") (do (println (lein-zprint-about))
-                                 (println (zprint-about))
-                                 (zp/czprint nil :support))
-    (= file-spec ":about") (println (lein-zprint-about))
-    (= file-spec ":help") (println help-str)
-    :else
-      (let [parent-path (fs/parent file-spec)
-            tmp-name (fs/temp-name "zprint")
-            tmp-file (str parent-path File/separator tmp-name)
-            old-file (str file-spec ".old")]
-        (println "Processing file:" file-spec)
-        (let [[switch old?] (process-options-as-switches project-options
-                                                         line-options)
-              ; If old? is nil (or, really, not false), then we want to
-              ; default it to true.  False means we explicitly found it
-              ; set to false somewhere, nil means that we didn't see anything
-              ; about it one way or the other.
-              old? (if-not (false? old?) true)
-              parallel? (get project-options :parallel? true)]
-          (try
-            (case switch
-              :default (zp/set-options!
-                         {:configured? true, :parallel? parallel?, :old? old?})
-              #_#_:standard
-                (zp/set-options! {:configured? true,
-                                  :style :standard,
-                                  :parallel? parallel?,
-                                  :old? old?})
-              (do (zp/configure-all!)
-                  (zp/set-options! {:parallel? true} "lein-zprint internal")
-                  (zp/set-options! project-options ":zprint map in project.clj")
-                  (zp/set-options! line-options "lein zprint command line")))
-            (zp/zprint-file file-spec (fs/base-name file-spec) tmp-file)
-            (when (:old? (zc/get-options))
-              (fs/delete old-file)
-              (fs/rename file-spec old-file))
-            (fs/rename tmp-file file-spec)
-            (when (:old? (zc/get-options)) old-file)
-            (catch Exception e
-              (println (str "Unable to process file: "
-                            file-spec
-                            " because: "
-                            e
-                            " Leaving it unchanged!"))))))))
+  (cond (= file-spec ":explain") (do (println (lein-zprint-about))
+                                     (println (zprint-about))
+                                     (zp/czprint nil :explain))
+        (= file-spec ":support") (do (println (lein-zprint-about))
+                                     (println (zprint-about))
+                                     (zp/czprint nil :support))
+        (= file-spec ":about") (println (lein-zprint-about))
+        (= file-spec ":help") (println help-str)
+        :else
+          (let [parent-path (fs/parent file-spec)
+                tmp-name (fs/temp-name "zprint")
+                tmp-file (str parent-path File/separator tmp-name)
+                old-file (str file-spec ".old")]
+            (println "Processing file:" file-spec)
+            (let [[switch old?] (process-options-as-switches project-options
+                                                             line-options)
+                  ; If old? is nil (or, really, not false), then we want to
+                  ; default it to true.  False means we explicitly found it
+                  ; set to false somewhere, nil means that we didn't see
+                  ; anything
+                  ; about it one way or the other.
+                  old? (if-not (false? old?) true)
+                  parallel? (get project-options :parallel? true)]
+              (try
+                (case switch
+                  :default (zp/set-options! {:configured? true,
+                                             :color? false,
+                                             :parallel? parallel?,
+                                             :old? old?})
+                  #_#_:standard
+                    (zp/set-options! {:configured? true,
+                                      :style :standard,
+                                      :color? false,
+                                      :parallel? parallel?,
+                                      :old? old?})
+                  (do (zp/configure-all!)
+                      (zp/set-options! {:parallel? true} "lein-zprint internal")
+                      (zp/set-options! project-options
+                                       ":zprint map in project.clj")
+                      (zp/set-options! line-options "lein-zprint command line")
+                      (zp/set-options! {:color? false} "lein-zprint no color")))
+                (zp/zprint-file file-spec (fs/base-name file-spec) tmp-file)
+                (when (:old? (zc/get-options))
+                  (fs/delete old-file)
+                  (fs/rename file-spec old-file))
+                (fs/rename tmp-file file-spec)
+                (when (:old? (zc/get-options)) old-file)
+                (catch Exception e
+                  (println (str "Unable to process file: "
+                                file-spec
+                                " because: "
+                                e
+                                " Leaving it unchanged!"))))))))
 
 (defn ^:no-project-needed zprint
   "Pretty-print all of the arguments that are not a map, replacing the
@@ -264,16 +252,16 @@
                                    :else [{:width arg1} (next args)])
                              [{:width arg1} (next args)])
             (= :planck-cmd-line arg1)
-	      (do (println (str ":planck-cmd-line has been removed. "
-	                        "The last version to support :planck-cmd-line "
-	                        "was 0.5.0 for both lein-zprint and zprint."))
-		  [nil nil])
+              (do (println (str ":planck-cmd-line has been removed. "
+                                "The last version to support :planck-cmd-line "
+                                "was 0.5.0 for both lein-zprint and zprint."))
+                  [nil nil])
             (= :lumo-cmd-line arg1)
-	      (do (println (str ":lumo-cmd-line has been removed. "
-	                        "The last version to support :lumo-cmd-line "
-	                        "was 0.5.0 for both lein-zprint and zprint, "
-				"but required an older version of lumo." ))
-		  [nil nil])
+              (do (println (str ":lumo-cmd-line has been removed. "
+                                  "The last version to support :lumo-cmd-line "
+                                "was 0.5.0 for both lein-zprint and zprint, "
+                                  "but required an older version of lumo."))
+                  [nil nil])
             (clojure.string/starts-with? (first args) "-") [(first args)
                                                             (next args)]
             :else [{} args])
@@ -281,7 +269,8 @@
     ; All of these options will be reset by zprint-one-file, but we
     ; do them here to see if they work, and for :explain output.
     (case switch
-      :default (zp/set-options! {:configured? true, :parallel? true})
+      :default (zp/set-options! {:configured? true, :parallel? true}
+                                "lein-zprint default switch")
       #_#_:standard
         (zp/set-options! {:configured? true, :style :standard, :parallel? true})
       ; Regular, not switch processing
