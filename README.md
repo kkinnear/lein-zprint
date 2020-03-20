@@ -6,8 +6,7 @@ scratch, completely ignoring all existing line breaks and white
 space inside function definitions. Lein-zprint will invoke zprint 
 on one or more source files that you specify.  
 
-It will also help you configure a Unix-style code formating filter
-using the zprint library which you can use directly in your editor.
+See the considerable [documentation for zprint](https://github.com/kkinnear/zprint).
 
 Use boot instead of Leiningen?  No problem, use: [boot-fmt][bootfmt]
 
@@ -19,7 +18,7 @@ If you would prefer a standalone program that accepts Clojure(script)
 source and emits formatted Clojure(script) source, starts up faster
 than 55ms, and runs faster than anything using Javascript (e.g. node.js),
 look here 
-[here](https://github.com/kkinnear/zprint/blob/master/doc/graalvm.md)
+[here](https://github.com/kkinnear/zprint/blob/master/doc/using/files.md)
 for information!
 
 The zprint library itself is highly configurable, allowing you to
@@ -138,9 +137,11 @@ though there are several more described below:
 
 You can use the following approaches when configuring lein zprint:
 
-  * The `$HOME/.zprintrc` file, containing a zprint options map, as described in
-  the zprint readme.  This configuration information will be used for all invocations
-  of the zprint library by this user -- including lein zprint and repl calls.
+  * The `$HOME/.zprintrc` file, containing a zprint options map,
+  as described in the zprint readme.  This configuration information
+  will be used for all invocations of the zprint library by this
+  user -- including lein zprint and zprint calls made when running
+  in the REPL.
 
   * A `:zprint` options map in `project.clj`.
 
@@ -157,6 +158,13 @@ You can use the following approaches when configuring lein zprint:
   repl (c)zprint or (c)zprint-fn calls.  That said, it is likely the place where
   you will want to configure a width and turn off the renaming of files with
   a .old extension, as above.
+
+  * A `.zprintrc` file in the top level of the project. 
+
+  You can put a .zprintrc file in your project (at the same level as the
+  `project.clj` file), and it will be recognized and used for configuring
+  lein zprint if you __also__ put `{:search-config? true}` in the `:zprint`
+  options map in the `project.clj` file.  
 
   * Arguments on the command line of lein zprint.
 
@@ -304,6 +312,6 @@ from what you expected.
 
 ## License
 
-Copyright © 2016-2019 Kim Kinnear
+Copyright © 2016-2020 Kim Kinnear
 
 Distributed under the MIT License.  See the file LICENSE for details.

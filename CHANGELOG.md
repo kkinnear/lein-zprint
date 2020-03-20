@@ -3,6 +3,19 @@ All notable changes to this project will be documented in this file.
 
 ## 0.5.4 - 2019-11-9
 
+### Added
+
+* You can now place a function in an options map specified on the command
+line.  You cannot place a function in an options map specified in a
+`project.clj` file.  Functions are rarely specified in an options map, so
+this hasn't been much of a restriction, nor is the inability to specify it
+in a `project.clj` file a serious problem.  You can always place a function
+in an options map in the `~/.zprintrc` file.
+
+* If you place `cwd-zprintrc?` or `search-config?` in the options map
+specified on the command line or in the options map in the `project.clj` file,
+they will be honored and used to when configuring the zprint library.
+
 ### Changed
 
 * Updated to [zprint "0.5.4"]
