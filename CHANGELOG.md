@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
-## 1.0.0 - 2019-3-21
+## 1.0.0 - 2019-6-8
 
 ### Added
 
