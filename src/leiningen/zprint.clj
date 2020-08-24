@@ -191,8 +191,6 @@
     (= file-spec ":help") (println help-str)
     :else
       (let [parent-path (fs/parent file-spec)
-            tmp-name (fs/temp-name "zprint")
-            tmp-file (str parent-path File/separator tmp-name)
             old-file (str file-spec ".old")]
         (println "Processing file:" file-spec)
         (let [[switch old?] (process-options-as-switches project-options
@@ -226,12 +224,21 @@
                   (zp/set-options! project-options ":zprint map in project.clj")
                   (zp/set-options! line-options "lein-zprint command line")
                   (zp/set-options! {:color? false} "lein-zprint no color")))
-            (zp/zprint-file file-spec (fs/base-name file-spec) tmp-file)
-            (when (:old? (zc/get-options))
-              (fs/delete old-file)
-              (fs/rename file-spec old-file))
-            (fs/rename tmp-file file-spec)
-            (when (:old? (zc/get-options)) old-file)
+            (let [infile (slurp file-spec)
+                  formatted-infile (zp/zprint-file-str
+                                     infile
+                                     (str "file: " (fs/base-name file-spec))
+                                     {}
+                                     (str "input for file: "
+                                          (fs/base-name file-spec)))]
+              ; If we want old files, create it w/out rename, since rename
+              ; is problematic on Windows systems.
+              (when (:old? (zc/get-options))
+                (fs/delete old-file)
+                (spit old-file infile))
+              ; Save the formatted file regardless of the old file flag
+              (spit file-spec formatted-infile)
+              (when (:old? (zc/get-options)) old-file))
             (catch Exception e
               (println (str "Unable to process file: "
                             file-spec

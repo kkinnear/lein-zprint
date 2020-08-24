@@ -1,13 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
-## 1.0.1 - 2019-6-9
+## 1.0.1 - 2019-8-24
 
 ### Added
 
 ### Changed
 
 * Updated to [zprint "1.0.1"]
+
+* Changed the way that files are processed, removing reliance on
+  rename, and using just `slurp` and `spit` to read and create files.
+  No temporary file created, it is all held in memory.  Which it was
+  anyway in `zprint-file`, but now it is explicit here in `lein-zprint`.
 
 ## 1.0.0 - 2019-6-8
 

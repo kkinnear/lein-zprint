@@ -2,6 +2,7 @@
 /classes
 /checkouts
 /test/leiningen/*.in
+/test/leiningen/*.old
 pom.xml
 pom.xml.asc
 *.jar

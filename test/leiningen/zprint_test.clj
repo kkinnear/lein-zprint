@@ -14,13 +14,21 @@
 ;;
 
 (fs/copy "test/leiningen/basic" "test/leiningen/basic.in")
+(fs/delete "test/leiningen/basic.in.old")
 
-; This will replace basic.in with a reformatted basic.in
+; This will replace basic.in with a reformatted basic.in and leave basic.in.old
+; around as well.
 
-(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
+(leiningen.zprint/zprint {:zprint {:old? true, :parallel? false}}
                          "test/leiningen/basic.in")
 
 (expect (slurp "test/leiningen/basic.out") (slurp "test/leiningen/basic.in"))
+
+(expect (slurp "test/leiningen/basic") (slurp "test/leiningen/basic.in.old"))
+
+; If you put the delete here, it happens before the expect executes, so we
+; delete the .old file before we start to ensure that it actually shows up.
+
 
 ;--------------------------
 
