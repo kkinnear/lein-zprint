@@ -5,7 +5,7 @@
             :url "https://opensource.org/licenses/MIT",
             :key "mit",
             :year 2015}
-  :plugins [[lein-expectations "0.0.8"] [lein-zprint "1.0.0"]]
+  :plugins [[lein-expectations "0.0.8"] [lein-zprint "1.0.1"]]
   :zprint {:old? false}
   :eval-in-leiningen true
   :jvm-opts ^:replace ["-server" "-Xss500m"]
