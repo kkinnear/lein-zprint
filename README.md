@@ -21,6 +21,17 @@ look here
 [here](https://github.com/kkinnear/zprint/blob/master/doc/using/files.md)
 for information!
 
+Note that the pre-built binaries discussed in the link above will (as of
+version `zprint 1.0.2`) perform essentially the same operations as lein zprint.
+You can do:
+```
+$ zprint -w *.clj
+```
+to format a series of Clojure(script) files.  This approach will almost 
+certainly run faster than lein zprint, possibly taking 60% of the time as
+lein zprint.  The only substantive difference is that it won't read 
+zprint configuration from the `project.clj` file.
+
 The zprint library itself is highly configurable, allowing you to
 tune the formatting.  
 
