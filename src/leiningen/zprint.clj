@@ -7,7 +7,7 @@
 (defn lein-zprint-about
   "Return version of this program."
   []
-  (str "lein-zprint-1.0.2"))
+  (str "lein-zprint-1.1"))
 
 (defn zprint-about "Return version of zprint library program." [] (zc/about))
 
