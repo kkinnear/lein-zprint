@@ -1,15 +1,15 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
-## 1.1 - 2019-11-11
+## 1.1.0 - 2021-1-16
 
 ### Added
 
 ### Changed
 
-* Updated to [zprint "1.1"]
+* Updated to [zprint "1.1.0"]
 
-## 1.0.2 - 2019-11-10
+## 1.0.2 - 2020-11-10
 
 ### Added
 
@@ -17,7 +17,7 @@ All notable changes to this project will be documented in this file.
 
 * Updated to [zprint "1.0.2"]
 
-## 1.0.1 - 2019-9-21
+## 1.0.1 - 2020-9-21
 
 ### Added
 
@@ -30,7 +30,7 @@ All notable changes to this project will be documented in this file.
   No temporary file created, it is all held in memory.  Which it was
   anyway in `zprint-file`, but now it is explicit here in `lein-zprint`.
 
-## 1.0.0 - 2019-6-8
+## 1.0.0 - 2020-6-8
 
 ### Added
 
@@ -38,7 +38,7 @@ All notable changes to this project will be documented in this file.
 
 * Updated to [zprint "1.0.0"]
 
-## 0.5.4 - 2019-3-21
+## 0.5.4 - 2020-3-21
 
 ### Added
 
