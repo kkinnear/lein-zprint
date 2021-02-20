@@ -1,6 +1,6 @@
 # lein-zprint
 
-A Leiningen plugin that will use the zprint library to format your
+A Leiningen plugin that will use the [zprint](https://github.com/kkinnear/zprint) library to format your
 Clojure source files.  Zprint reformats Clojure source files from
 scratch, completely ignoring all existing line breaks and white
 space inside function definitions. Lein-zprint will invoke zprint 
