@@ -252,60 +252,66 @@
   with a .old extension.  If the arg is a map, it is considered an options
   map and subsequent files are pretty printed with those options."
   [project & args]
-  (let [project-options (:zprint project)
-        arg1 (try (load-string (first args)) (catch Exception e nil))
-        [line-options args]
-          (cond
-            (map? arg1) [arg1 (next args)]
-            (number? arg1) (if-let [arg2 (try (load-string (second args))
-                                              (catch Exception e nil))]
-                             (cond (map? arg2) [(merge {:width arg1} arg2)
-                                                (nnext args)]
-                                   :else [{:width arg1} (next args)])
-                             [{:width arg1} (next args)])
-            (= :planck-cmd-line arg1)
-              (do (println (str ":planck-cmd-line has been removed. "
-                                "The last version to support :planck-cmd-line "
-                                "was 0.5.0 for both lein-zprint and zprint."))
-                  [nil nil])
-            (= :lumo-cmd-line arg1)
-              (do (println (str ":lumo-cmd-line has been removed. "
+  (if (empty? args)
+    (println help-str)
+    (let [project-options (:zprint project)
+          arg1 (try (load-string (first args)) (catch Exception e nil))
+          [line-options args]
+            (cond
+              (map? arg1) [arg1 (next args)]
+              (number? arg1) (if-let [arg2 (try (load-string (second args))
+                                                (catch Exception e nil))]
+                               (cond (map? arg2) [(merge {:width arg1} arg2)
+                                                  (nnext args)]
+                                     :else [{:width arg1} (next args)])
+                               [{:width arg1} (next args)])
+              (= :planck-cmd-line arg1)
+                (do (println
+                      (str ":planck-cmd-line has been removed. "
+                           "The last version to support :planck-cmd-line "
+                           "was 0.5.0 for both lein-zprint and zprint."))
+                    [nil nil])
+              (= :lumo-cmd-line arg1)
+                (do
+                  (println (str ":lumo-cmd-line has been removed. "
                                   "The last version to support :lumo-cmd-line "
                                 "was 0.5.0 for both lein-zprint and zprint, "
                                   "but required an older version of lumo."))
                   [nil nil])
-            (clojure.string/starts-with? (first args) "-") [(first args)
-                                                            (next args)]
-            :else [{} args])
-        [switch _] (process-options-as-switches project-options line-options)
-        op-options (cond (and (map? project-options) (map? line-options))
-                           (zc/merge-deep project-options line-options)
-                         (map? project-options) project-options
-                         (map? line-options) line-options
-                         :else {})]
-    ; All of these options will be reset by zprint-one-file, but we
-    ; do them here to see if they work, and for :explain output.
-    (case switch
-      :default (zp/set-options! {:configured? true, :parallel? true}
-                                "lein-zprint default switch")
-      #_#_:standard
-        (zp/set-options! {:configured? true, :style :standard, :parallel? true})
-      ; Regular, not switch processing
-      (do (zp/set-options! {:parallel? true} "lein-zprint internal" op-options)
+              (clojure.string/starts-with? (first args) "-") [(first args)
+                                                              (next args)]
+              :else [{} args])
+          [switch _] (process-options-as-switches project-options line-options)
+          op-options (cond (and (map? project-options) (map? line-options))
+                             (zc/merge-deep project-options line-options)
+                           (map? project-options) project-options
+                           (map? line-options) line-options
+                           :else {})]
+      ; All of these options will be reset by zprint-one-file, but we
+      ; do them here to see if they work, and for :explain output.
+      (case switch
+        :default (zp/set-options! {:configured? true, :parallel? true}
+                                  "lein-zprint default switch")
+        #_#_:standard
+          (zp/set-options!
+            {:configured? true, :style :standard, :parallel? true})
+        ; Regular, not switch processing
+        (do
+          (zp/set-options! {:parallel? true} "lein-zprint internal" op-options)
           (when project-options
             (zp/set-options! project-options ":zprint map in project.clj"))
           (when line-options
             (zp/set-options! line-options "lein zprint command line"))))
-    (let [old-files (mapv #(zprint-one-file project-options line-options %)
-                      args)
-          old-files (remove nil? old-files)]
-      (when-not (empty? old-files)
-        (println "Renamed"
-                 (count old-files)
-                 (str "original file"
-                      (if (> (count old-files) 1) "s" "")
-                      " with .old extensions."))
-        (println
-          "To disable rename, add :zprint {:old? false} to your project.clj.")))
-    (flush)
-    (shutdown-agents)))
+      (let [old-files (mapv #(zprint-one-file project-options line-options %)
+                        args)
+            old-files (remove nil? old-files)]
+        (when-not (empty? old-files)
+          (println "Renamed"
+                   (count old-files)
+                   (str "original file"
+                        (if (> (count old-files) 1) "s" "")
+                        " with .old extensions."))
+          (println
+            "To disable rename, add :zprint {:old? false} to your project.clj.")))
+      (flush)
+      (shutdown-agents))))
