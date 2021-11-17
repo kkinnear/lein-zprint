@@ -50,7 +50,7 @@
                 #_(concat (list :averylongkeyword :anotherverylongkeyword
                                 :athirdverylongkeywor :afourthone
                                 :fifthone :sixthone))))
-                
+
                   (defn tstfn5
                     "This is a second function."
                     [a b c]
@@ -61,6 +61,6 @@
                       #_(concat (list :averylongkeyword :anotherverylongkeyword
                                       :athirdverylongkeywor :afourthone
                                       :fifthone :sixthone))))
-                
-                
-                
+
+
+
