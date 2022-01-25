@@ -1,4 +1,4 @@
-(defproject lein-zprint "1.2.1"
+(defproject lein-zprint "1.2.2"
   :description "Run zprint to pretty print source files in your project."
   :url "https://github.com/kkinnear/lein-zprint"
   :license {:name "MIT License",
