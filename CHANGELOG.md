@@ -11,6 +11,13 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+* Upgraded processing of `:zprint` key in `project.clj` as well as
+  command-line processing to use `zprint.config/sci-load-string`.  This
+  means that functions can be defined in these areas, and internal guides
+  can also be referenced.  This is in response to zprint issue #223, where
+  the temporary workaround couldn't be handled in the `:zprint` key 
+  of `project.clj`.
+
 ## 1.2.2 - 2022-02-11
 
 ### Added

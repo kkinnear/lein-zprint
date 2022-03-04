@@ -253,16 +253,18 @@
   map and subsequent files are pretty printed with those options."
   [project & args]
   (let [project-options (:zprint project)
-        arg1 (try (load-string (first args)) (catch Exception e nil))
+        project-options (zprint.config/sci-load-string (pr-str project-options))
+        arg1 (try (zprint.config/sci-load-string (first args))
+                  (catch Exception e nil))
         [line-options args]
           (cond
             (map? arg1) [arg1 (next args)]
-            (number? arg1) (if-let [arg2 (try (load-string (second args))
-                                              (catch Exception e nil))]
-                             (cond (map? arg2) [(merge {:width arg1} arg2)
-                                                (nnext args)]
-                                   :else [{:width arg1} (next args)])
-                             [{:width arg1} (next args)])
+            (number? arg1)
+              (if-let [arg2 (try (zprint.config/sci-load-string (second args))
+                                 (catch Exception e nil))]
+                (cond (map? arg2) [(merge {:width arg1} arg2) (nnext args)]
+                      :else [{:width arg1} (next args)])
+                [{:width arg1} (next args)])
             (= :planck-cmd-line arg1)
               (do (println (str ":planck-cmd-line has been removed. "
                                 "The last version to support :planck-cmd-line "
@@ -291,7 +293,9 @@
       #_#_:standard
         (zp/set-options! {:configured? true, :style :standard, :parallel? true})
       ; Regular, not switch processing
-      (do (zp/set-options! {:parallel? true} "lein-zprint internal" op-options)
+      (do (zp/set-options! {:parallel? true}
+                           "lein-zprint: :zprint key in project.clj"
+                           op-options)
           (when project-options
             (zp/set-options! project-options ":zprint map in project.clj"))
           (when line-options
