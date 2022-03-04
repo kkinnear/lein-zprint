@@ -183,3 +183,39 @@
                                       "--stuff"
                                       "test/leiningen/dropspace4.in")
              (catch Exception e (str e))))
+
+;--------------------------
+; Can we handle a complex function definition on the command line?
+
+(fs/copy "test/leiningen/sci" "test/leiningen/sci.in")
+
+(leiningen.zprint/zprint
+  {:zprint {:old? false, :parallel? false}}
+  "{:style [:community :rod] :style-map {:rod {:fn-map {\"defn\" [:fn {:list {:option-fn (partial rodguide {:multi-arity-nl? true})}}]}}}}"
+  "test/leiningen/sci.in")
+
+(expect (slurp "test/leiningen/sci.out")
+        (slurp "test/leiningen/sci.in"))
+
+;--------------------------
+; Can we handle a complex function definition in the :zprint key of the
+; project.clj?
+
+(fs/copy "test/leiningen/sci2" "test/leiningen/sci2.in")
+
+(leiningen.zprint/zprint
+  (clojure.tools.reader.edn/read-string
+    "{:zprint {:old? false, :parallel? false
+      :style [:community :rod],
+      :style-map {:rod {:fn-map {\"defn\" [:fn
+                                      {:list {:option-fn (partial
+                                                           rodguide
+                                                           {:multi-arity-nl?
+                                                              true})}}]}}}}}")
+  "test/leiningen/sci2.in")
+
+(expect (slurp "test/leiningen/sci2.out")
+        (slurp "test/leiningen/sci2.in"))
+
+
+
