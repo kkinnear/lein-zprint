@@ -1,0 +1,10 @@
+(defn foo [x]
+  (println
+   x
+   "Hello, World!")
+  (println
+   x
+   "Hello, World!")
+  (println
+   x
+   "Hello, World!"))

@@ -219,7 +219,7 @@
                                   :color? false,
                                   :parallel? parallel?,
                                   :old? old?})
-              (do (zc/config-configure-all! op-options)
+              (do (zp/configure-all! op-options)
                   (zp/set-options! {:parallel? true} "lein-zprint internal")
                   (zp/set-options! project-options ":zprint map in project.clj")
                   (zp/set-options! line-options "lein-zprint command line")
