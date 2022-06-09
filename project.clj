@@ -10,6 +10,6 @@
   :eval-in-leiningen true
   :jvm-opts ^:replace ["-server" "-Xss500m"]
   :profiles {:dev {:dependencies [[expectations "2.2.0-rc3"]]}}
-  :dependencies [[zprint "1.2.4"]
+  :dependencies [[zprint "1.2.4-alpha1"]
                  #_[clojure-future-spec "1.9.0-alpha17"]
                  [me.raynes/fs "1.4.6"]])

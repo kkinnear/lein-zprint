@@ -112,13 +112,16 @@
     (string? options)
       (if (clojure.string/starts-with? options "-")
         (cond (or (= options "--default") (= options "-d")) [:default nil]
+              (or (= options "--check") (= options "-c")) [:check nil]
               #_#_(or (= options "--standard") (= options "-s")) [:standard nil]
               :else (throw (Exception. (str "Unknown switch '" options "'")))))
     (map options)
       (when (:command options)
         (let [command (:command options)
               option-keys (keys options)]
-          (if (or (= command :default) (= command :standard))
+          (if (or (= command :default)
+                  #_(= command :standard)
+                  (= command :check))
             (if (= (count option-keys)
                    (count (filter #{:old? :parallel? :command} option-keys)))
               [command (:old? options)]
@@ -219,26 +222,39 @@
                                   :color? false,
                                   :parallel? parallel?,
                                   :old? old?})
-              (do (zp/configure-all! op-options)
-                  (zp/set-options! {:parallel? true} "lein-zprint internal")
-                  (zp/set-options! project-options ":zprint map in project.clj")
-                  (zp/set-options! line-options "lein-zprint command line")
-                  (zp/set-options! {:color? false} "lein-zprint no color")))
-            (let [infile (slurp file-spec)
+              (let [line-options (if (= switch :check) {} line-options)]
+                (zp/configure-all! op-options)
+                (zp/set-options! {:parallel? true} "lein-zprint internal")
+                (zp/set-options! project-options ":zprint map in project.clj")
+                (zp/set-options! line-options "lein-zprint command line")
+                (zp/set-options! {:color? false} "lein-zprint no color")))
+            (let [check? (= switch :check)
+                  infile (slurp file-spec)
                   formatted-infile (zp/zprint-file-str
                                      infile
                                      (str "file: " (fs/base-name file-spec))
                                      {}
                                      (str "input for file: "
                                           (fs/base-name file-spec)))]
-              ; If we want old files, create it w/out rename, since rename
-              ; is problematic on Windows systems.
-              (when (:old? (zc/get-options))
-                (fs/delete old-file)
-                (spit old-file infile))
-              ; Save the formatted file regardless of the old file flag
-              (spit file-spec formatted-infile)
-              (when (:old? (zc/get-options)) old-file))
+              (if check?
+                (do
+                  (if (= infile formatted-infile)
+                    ; It checks correctly
+                    :correct
+                    (do
+                      (binding [*out* *err*]
+                        (println "File:" file-spec "was incorrectly formatted"))
+                      :incorrect)))
+                (do
+                  ; If we want old files, create it w/out rename, since rename
+                  ; is problematic on Windows systems.
+                  (when (:old? (zc/get-options))
+                    (fs/delete old-file)
+                    (spit old-file infile))
+                  ; Save the formatted file regardless of the old file flag
+                  (spit file-spec formatted-infile)
+                  ; Return the old file name if we had :old? true
+                  (when (:old? (zc/get-options)) old-file))))
             (catch Exception e
               (println (str "Unable to process file: "
                             file-spec
@@ -280,6 +296,12 @@
                                                             (next args)]
             :else [{} args])
         [switch _] (process-options-as-switches project-options line-options)
+        ; Having processed options as switches, get rid of :command
+        project-options (if (map? project-options)
+                          (dissoc project-options :command)
+                          project-options)
+        line-options
+          (if (map? line-options) (dissoc line-options :command) line-options)
         op-options (cond (and (map? project-options) (map? line-options))
                            (zc/merge-deep project-options line-options)
                          (map? project-options) project-options
@@ -293,23 +315,38 @@
       #_#_:standard
         (zp/set-options! {:configured? true, :style :standard, :parallel? true})
       ; Regular, not switch processing
-      (do (zp/set-options! {:parallel? true}
-                           "lein-zprint: :zprint key in project.clj"
-                           op-options)
-          (when project-options
-            (zp/set-options! project-options ":zprint map in project.clj"))
-          (when line-options
-            (zp/set-options! line-options "lein zprint command line"))))
-    (let [old-files (mapv #(zprint-one-file project-options line-options %)
+      (do (let [line-options (if (= switch :check) {} line-options)]
+            (zp/set-options! {:parallel? true}
+                             "lein-zprint: :zprint key in project.clj"
+                             op-options)
+            (when project-options
+              (zp/set-options! project-options ":zprint map in project.clj"))
+            (when line-options
+              (zp/set-options! line-options "lein zprint command line")))))
+    (let [check? (= switch :check)
+          old-files (mapv #(zprint-one-file project-options line-options %)
                       args)
           old-files (remove nil? old-files)]
-      (when-not (empty? old-files)
-        (println "Renamed"
-                 (count old-files)
-                 (str "original file"
-                      (if (> (count old-files) 1) "s" "")
-                      " with .old extensions."))
-        (println
-          "To disable rename, add :zprint {:old? false} to your project.clj.")))
+      (if check?
+        (let [correct-count (count (filter #(= % :correct) old-files))
+              incorrect-count (count (filter #(= % :incorrect) old-files))]
+          (if (zero? incorrect-count)
+            (println "All files formatted correctly.")
+            (binding [*out* *err*]
+              (println (str incorrect-count
+                            " file"
+                            (if (> incorrect-count 1) "s" "")
+                            " formatted incorrectly"))
+              (flush)
+              (shutdown-agents)
+              (System/exit 1))))
+        (when-not (empty? old-files)
+          (println "Renamed"
+                   (count old-files)
+                   (str "original file"
+                        (if (> (count old-files) 1) "s" "")
+                        " with .old extensions."))
+          (println (str "To disable rename, add :zprint {:old? false}"
+                        " to your project.clj.")))))
     (flush)
     (shutdown-agents)))
