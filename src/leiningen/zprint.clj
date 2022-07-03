@@ -116,7 +116,7 @@
   [options]
   (let [map-options? (map? options)
         test? (when map-options? (:test? options))
-	options (if map-options? (dissoc options :test?) options)]
+        options (if map-options? (dissoc options :test?) options)]
     (cond
       (nil? options) nil
       (string? options)
@@ -223,52 +223,6 @@
                           [project-switch project-old? op-options
                            clean-project-options clean-line-options test?])
       :else nil)))
-
-(defn process-options-as-switches-alt
-  "Take the project-options and line-options, and look for switches.  If
-  switches are found (and don't conflict with each other), then return
-  :default, :standard, or nil.  Throw an exception for a problem.  If 
-  line-options has switch, ignore project-options if it is not a command,
-  but if it is a command, it must match line-options.  If project-options has
-  a command, then fail if line-options has something that is not the same
-  switch. Pull :old out of project options if it contains a command and
-  return it in old?. Returns [switch old?]."
-  [project-options line-options]
-  (cond
-    (not (empty? line-options))
-      (let [[line-switch line-old?] (get-switch line-options)
-            [project-switch project-old?] (get-switch project-options)
-            project-old? (or project-old?
-                             (when (map? project-options)
-                               (:old? project-options)))]
-        #_(println "project-old?:" project-old? project-options)
-        (if line-switch
-          ; If project-options were a switch, then we will require
-          ; line and project options have the same switch.
-          ; If project-options was a options map, then we will ignore it.
-          (if project-switch
-            (if (= line-switch project-switch)
-              [line-switch (or line-old? project-old?)]
-              (throw (Exception. (str "Command line input '"
-                                      line-options
-                                      "' conflicted with input from project.clj"
-                                      " file '"
-                                      project-options
-                                      "'!"))))
-            [line-switch (or line-old? project-old?)])
-          ; We had line-options, but not a switch.  If we have
-          ; a project switch, that is a error.  Project options are fine.
-          (when project-switch
-            (throw (Exception. (str "Command line input '"
-                                    line-options
-                                    "' conflicted with input from project.clj"
-                                    " file '"
-                                    project-options
-                                    "'!"))))))
-    ; We just have project-options, no line-options, so this is easy. It
-    ; is either a switch or options.!
-    (not (empty? project-options)) (get-switch project-options)
-    :else nil))
 
 (defn zprint-one-file
   "Take a file name, possibly including a path, and zprint that one file."
@@ -384,7 +338,7 @@
                   [nil nil])
             (clojure.string/starts-with? (first args) "-") [(first args)
                                                             (next args)]
-            :else [nil #_{} args])
+            :else [nil args])
         ; Are we doing a test?
         [project-options line-options test?]
           (let [map-project? (map? project-options)
