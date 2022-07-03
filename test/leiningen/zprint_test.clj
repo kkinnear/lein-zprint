@@ -19,7 +19,7 @@
 ; This will replace basic.in with a reformatted basic.in and leave basic.in.old
 ; around as well.
 
-(leiningen.zprint/zprint {:zprint {:old? true, :parallel? false}}
+(leiningen.zprint/zprint {:zprint {:old? true, :parallel? false :test? true}}
                          "test/leiningen/basic.in")
 
 (expect (slurp "test/leiningen/basic.out") (slurp "test/leiningen/basic.in"))
@@ -34,7 +34,7 @@
 
 (fs/copy "test/leiningen/narrow" "test/leiningen/narrow.in")
 
-(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
+(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false :test? true}}
                          "50"
                          "test/leiningen/narrow.in")
 
@@ -44,7 +44,7 @@
 
 (fs/copy "test/leiningen/noindent" "test/leiningen/noindent.in")
 
-(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
+(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false :test? true}}
                          "50"
                          "{:list {:indent 0}}"
                          "test/leiningen/noindent.in")
@@ -57,7 +57,7 @@
 
 (fs/copy "test/leiningen/off" "test/leiningen/off.in")
 
-(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
+(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false :test? true}}
                          "test/leiningen/off.in")
 
 (expect (slurp "test/leiningen/off.out") (slurp "test/leiningen/off.in"))
@@ -67,7 +67,7 @@
 
 (fs/copy "test/leiningen/on" "test/leiningen/on.in")
 
-(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
+(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false :test? true}}
                          "test/leiningen/on.in")
 
 (expect (slurp "test/leiningen/on.out") (slurp "test/leiningen/on.in"))
@@ -77,7 +77,7 @@
 
 (fs/copy "test/leiningen/next" "test/leiningen/next.in")
 
-(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
+(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false :test? true}}
                          "test/leiningen/next.in")
 
 (expect (slurp "test/leiningen/next.out") (slurp "test/leiningen/next.in"))
@@ -87,7 +87,7 @@
 
 (fs/copy "test/leiningen/skip" "test/leiningen/skip.in")
 
-(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
+(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false :test? true}}
                          "test/leiningen/skip.in")
 
 (expect (slurp "test/leiningen/skip.out") (slurp "test/leiningen/skip.in"))
@@ -96,7 +96,7 @@
 
 (fs/copy "test/leiningen/comment" "test/leiningen/comment.in")
 
-(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
+(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false :test? true}}
                          "test/leiningen/comment.in")
 
 (expect (slurp "test/leiningen/comment.out")
@@ -106,7 +106,7 @@
 
 (fs/copy "test/leiningen/dropspace" "test/leiningen/dropspace.in")
 
-(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
+(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false :test? true}}
                          "test/leiningen/dropspace.in")
 
 (expect (slurp "test/leiningen/dropspace.out")
@@ -116,7 +116,7 @@
 
 (fs/copy "test/leiningen/keepspace" "test/leiningen/keepspace.in")
 
-(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
+(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false :test? true}}
                          "test/leiningen/keepspace.in")
 
 (expect (slurp "test/leiningen/keepspace.out")
@@ -127,11 +127,11 @@
 
 (expect
   ":planck-cmd-line has been removed. The last version to support :planck-cmd-line was 0.5.0 for both lein-zprint and zprint.\n"
-  (with-out-str (zprint {} ":planck-cmd-line" "sr")))
+  (with-out-str (zprint {:zprint {:test? true}} ":planck-cmd-line" "sr")))
 
 (expect
   ":planck-cmd-line has been removed. The last version to support :planck-cmd-line was 0.5.0 for both lein-zprint and zprint.\n"
-  (with-out-str (zprint {} ":planck-cmd-line")))
+  (with-out-str (zprint {:zprint {:test? true}} ":planck-cmd-line")))
 
 
 ;----------------------
@@ -143,24 +143,24 @@
 ;;
 
 (expect
-  "java.lang.Exception: Command line input '{:width 20}' conflicted with input from project.clj file '{:command :default, :old? false}'!"
-  (try (leiningen.zprint/zprint {:zprint {:command :default, :old? false}}
-                                "{:width 20}"
-                                "test/leiningen/keepspace.in")
-       (catch Exception e (str e))))
+  "Incorrect command input: Command line input '{:width 20}' conflicted with input from project.clj file '{:command :default, :old? false}'!\n"
+  (with-out-str (leiningen.zprint/zprint
+                  {:zprint {:command :default, :old? false, :test? true}}
+                  "{:width 20}"
+                  "test/leiningen/keepspace.in")))
 
 
 (expect
-  "java.lang.Exception: If key :command appears in an options map the only other allowed keys are :old? and :parallel?, instead found: {:old? false, :command :default, :width 20}"
-  (try (leiningen.zprint/zprint {:zprint
-                                   {:old? false, :command :default, :width 20}}
-                                "test/leiningen/keepspace.in")
-       (catch Exception e (str e))))
+  "Incorrect command input: If key :command appears in an options map the only other allowed keys are :old? and :parallel?, instead found: {:old? false, :command :default, :width 20}\n"
+  (with-out-str
+    (leiningen.zprint/zprint
+      {:zprint {:old? false, :command :default, :width 20, :test? true}}
+      "test/leiningen/keepspace.in")))
 
 
 (fs/copy "test/leiningen/dropspace" "test/leiningen/dropspace2.in")
 
-(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
+(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false :test? true}}
                          "-d"
                          "test/leiningen/dropspace2.in")
 
@@ -169,7 +169,7 @@
 
 (fs/copy "test/leiningen/dropspace" "test/leiningen/dropspace3.in")
 
-(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
+(leiningen.zprint/zprint {:zprint {:old? false, :parallel? false :test? true}}
                          "--default"
                          "test/leiningen/dropspace3.in")
 
@@ -178,11 +178,11 @@
 
 (fs/copy "test/leiningen/dropspace" "test/leiningen/dropspace4.in")
 
-(expect "java.lang.Exception: Unknown switch '--stuff'"
-        (try (leiningen.zprint/zprint {:zprint {:old? false, :parallel? false}}
-                                      "--stuff"
-                                      "test/leiningen/dropspace4.in")
-             (catch Exception e (str e))))
+(expect "Incorrect command input: Unknown switch '--stuff'\n"
+        (with-out-str (leiningen.zprint/zprint
+                        {:zprint {:old? false, :parallel? false, :test? true}}
+                        "--stuff"
+                        "test/leiningen/dropspace4.in")))
 
 ;--------------------------
 ; Can we handle a complex function definition on the command line?
@@ -190,7 +190,7 @@
 (fs/copy "test/leiningen/sci" "test/leiningen/sci.in")
 
 (leiningen.zprint/zprint
-  {:zprint {:old? false, :parallel? false}}
+  {:zprint {:old? false, :parallel? false :test? true}}
   "{:style [:community :rod] :style-map {:rod {:fn-map {\"defn\" [:fn {:list {:option-fn (partial rodguide {:multi-arity-nl? true})}}]}}}}"
   "test/leiningen/sci.in")
 
@@ -205,7 +205,7 @@
 
 (leiningen.zprint/zprint
   (clojure.tools.reader.edn/read-string
-    "{:zprint {:old? false, :parallel? false
+    "{:zprint {:old? false, :parallel? false :test? true
       :style [:community :rod],
       :style-map {:rod {:fn-map {\"defn\" [:fn
                                       {:list {:option-fn (partial
@@ -216,6 +216,99 @@
 
 (expect (slurp "test/leiningen/sci2.out")
         (slurp "test/leiningen/sci2.in"))
+
+;---------------------------------------------------------
+; Can we check a file that is not formatted correctly?
+;
+
+(fs/copy "test/leiningen/basiccheck" "test/leiningen/basiccheck.in")
+
+; This will check basic.in and NOT reformat it
+
+(expect
+"Processing file: test/leiningen/basiccheck.in\nFile: test/leiningen/basiccheck.in was incorrectly formatted\n1 file formatted incorrectly\n"
+(with-out-str
+(binding [*err* *out*]
+
+(leiningen.zprint/zprint {:zprint {:old? true, :parallel? false :test? true}}
+			 "--check"
+                         "test/leiningen/basiccheck.in"))))
+
+(expect (slurp "test/leiningen/basiccheck") (slurp "test/leiningen/basiccheck.in"))
+
+; If you put the delete here, it happens before the expect executes, so we
+; delete the .old file before we start to ensure that it actually shows up.
+
+
+;---------------------------------------------------------
+; Can we check a file that is formatted correctly?
+;
+
+(fs/copy "test/leiningen/correctcheck" "test/leiningen/correctcheck.in")
+
+; This will check basic.in and NOT reformat it
+
+(expect
+"Processing file: test/leiningen/correctcheck.in\nAll files formatted correctly.\n"
+(with-out-str
+(binding [*err* *out*]
+
+(leiningen.zprint/zprint {:zprint {:old? true, :parallel? false :test? true}}
+			 "--check"
+                         "test/leiningen/correctcheck.in"))))
+
+(expect (slurp "test/leiningen/correctcheck") (slurp "test/leiningen/correctcheck.in"))
+
+; If you put the delete here, it happens before the expect executes, so we
+; delete the .old file before we start to ensure that it actually shows up.
+
+;---------------------------------------------------------
+; Can we check a file that is formatted correctly?
+;
+
+(fs/copy "test/leiningen/correctcheck" "test/leiningen/correctcheck.in")
+
+; This will check basic.in and NOT reformat it
+
+(expect
+"Processing file: test/leiningen/correctcheck.in\nAll files formatted correctly.\n"
+(with-out-str
+(binding [*err* *out*]
+
+(leiningen.zprint/zprint {:zprint {:old? true, :parallel? false :test? true}}
+			 "-c"
+                         "test/leiningen/correctcheck.in"))))
+
+(expect (slurp "test/leiningen/correctcheck") (slurp "test/leiningen/correctcheck.in"))
+
+; If you put the delete here, it happens before the expect executes, so we
+; delete the .old file before we start to ensure that it actually shows up.
+
+;---------------------------------------------------------
+; Can we check a file that is formatted correctly?
+;
+
+(fs/copy "test/leiningen/correctcheck" "test/leiningen/correctcheck.in")
+
+; This will check basic.in and NOT reformat it
+
+(expect
+"Processing file: test/leiningen/correctcheck.in\nAll files formatted correctly.\n"
+(with-out-str
+(binding [*err* *out*]
+
+(leiningen.zprint/zprint {:zprint {:old? true, :parallel? false :test? true :command :check}}
+                         "test/leiningen/correctcheck.in"))))
+
+(expect (slurp "test/leiningen/correctcheck") (slurp "test/leiningen/correctcheck.in"))
+
+; If you put the delete here, it happens before the expect executes, so we
+; delete the .old file before we start to ensure that it actually shows up.
+
+
+
+
+ 
 
 
 

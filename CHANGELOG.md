@@ -1,13 +1,19 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
-## 1.2.4 - 2022-04-15
+## 1.2.4 - 2022-07-07
 
 ### Added
 
+  * Added ability to "check" formatting.  The `-c` and `--check` switches
+  on the command line will now check the formatting, returning 0 (success)
+  if all of the files are formatted correctly, and 1 (error) if any of them
+  are not formatted correctly.  Information is also printed regarding the
+  success or failure of the formatting checkes.  Issue #8.
+
 ### Changed
 
-* Updated to [zprint "1.2.4"]
+  * Updated to [zprint "1.2.4"]
 
 ### Fixed
 

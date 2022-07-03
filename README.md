@@ -6,13 +6,10 @@ scratch, completely ignoring all existing line breaks and white
 space inside function definitions. Lein-zprint will invoke zprint 
 on one or more source files that you specify.  
 
+Lein-zprint will also check to see if files are correctly formatted, without
+changing them.
+
 See the considerable [documentation for zprint](https://github.com/kkinnear/zprint).
-
-Use boot instead of Leiningen?  No problem, use: [boot-fmt][bootfmt]
-
-[boot-fmt][bootfmt] is usable even if you don't use boot, and has
-different command line arguments. You might find
-it more to your liking even if you use Leiningen.
 
 If you would prefer a standalone program that accepts Clojure(script)
 source and emits formatted Clojure(script) source, starts up faster
@@ -45,40 +42,13 @@ use the first file it finds when searching up from the current directory.
 * Place a `:zprint {}` options map in your `project.clj` file
 
 
-## Limiting Configuration for lein-zprint
-
-Note that some people want a formatter which is less configurable.
-To that end, lein-zprint will also support specification of its operation
-with only very small number of fixed configurations.  At present, the
-only fixed configuration is __default__, where lein-zprint will accept
-no external configuration, and will format based only on the default
-configuration and the information in the file.  
-
-If you specify default configuration lein-zprint will ignore all
-external configuration, including the `$HOME/.zprintrc` file and
-most of the information in the `:zprint` key in the `project.clj` file.
-The only external configuation it will accept (which doesn't affect
-the formatting) are the `:old?` and `:parallel?` keys in the `:zprint` 
-map in the `project.clj` file.
-
-This default configuration is available in two ways:
-
-  * If you specify "-d" or "--default" on the command line in place of
-    an options map. 
-
-  * If you specify `:command :default` in the `:zprint` map in the
-    `project.clj` file.  Note that you cannot specify this in the
-    `$HOME/.zprintrc` file, it is only available to the `:zprint`
-    map in the `project.clj` file!  By using this approach, a project
-    can enforce formatting that is not affected by a users default
-    zprint configuration or by any options map given on the lein
-    zprint command line.
-
 
 [bootfmt]: https://github.com/pesterhazy/boot-fmt
 
 
 ## Usage
+
+### Formatting Files
 
 It is pretty straightforward to use lein zprint.
 
@@ -114,22 +84,41 @@ setting a zprint options map in your project.clj:
 ...
 ```
 
-Note: You should invoke `lein zprint` from the top level of your leiningen
+NOTE: You should invoke `lein zprint` from the top level of your leiningen
 project (i.e., the directory that contains the project.clj file).  While
 you can invoke `lein zprint` from your source directory, the current directory
 for `lein zprint` will be the top level of your leiningen project
 and it will not find the files in the current directory.  Which will confuse
 us all.
 
-## __REMOVED:__ A zprint formatting filter using planck or lumo
 
-There are several more effective ways of creating a zprint filter than
-using planck or lumo these days.  Most effective is to use the graalVM
-binaries of zprint-filter for macOS or Linux.  The appcds capability
-to run the zprint uberjar quickly is good for other platforms. See
-the [zprint documentation](https://github.com/kkinnear/zprint) for details. 
-For Clojurescript filters, several node based filters already exist which
-are easy to use.
+### Checking Files
+
+You can use `lein-zprint` to check to see if files are formatted correctly,
+without changing them.  Use the `-c` or `--check` command line switches
+to access this capability.  When checking files, in addition to printed
+messages, the exit status is 0 (for success) if all of the files were 
+formatted correctly.  The exit status is 1 (for failure) if any of the files
+were not formatted correctly.
+
+```
+√ % lein zprint -c correctcheck
+Processing file: correctcheck
+All files formatted correctly.
+√ %
+```
+
+Correctly formatted is defined as whatever formatting `lein-zprint` would 
+perform based on the configuration it uses when invoked for checking the files.
+
+```
+√ % lein zprint -c proj.clj correctcheck
+Processing file: proj.clj
+File: proj.clj was incorrectly formatted
+Processing file: correctcheck
+1 file formatted incorrectly
+?1 %
+```
 
 ## Configuring lein zprint to operate on source files
 
@@ -319,10 +308,39 @@ as well as the source file (or fragment thereof) that is a concern,
 and please show what lein zprint produced and explain how it differed
 from what you expected. 
 
+## Limiting Configuration for lein-zprint
+
+Note that some people want a formatter which is less configurable.
+To that end, lein-zprint will also support specification of its operation
+with only very small number of fixed configurations.  At present, the
+only fixed configuration is __default__, where lein-zprint will accept
+no external configuration, and will format based only on the default
+configuration and the information in the file.  
+
+If you specify default configuration lein-zprint will ignore all
+external configuration, including the `$HOME/.zprintrc` file and
+most of the information in the `:zprint` key in the `project.clj` file.
+The only external configuation it will accept (which doesn't affect
+the formatting) are the `:old?` and `:parallel?` keys in the `:zprint` 
+map in the `project.clj` file.
+
+This default configuration is available in two ways:
+
+  * If you specify "-d" or "--default" on the command line in place of
+    an options map. 
+
+  * If you specify `:command :default` in the `:zprint` map in the
+    `project.clj` file.  Note that you cannot specify this in the
+    `$HOME/.zprintrc` file, it is only available to the `:zprint`
+    map in the `project.clj` file!  By using this approach, a project
+    can enforce formatting that is not affected by a users default
+    zprint configuration or by any options map given on the lein
+    zprint command line.
+
 
 
 ## License
 
-Copyright © 2016-2020 Kim Kinnear
+Copyright © 2016-2022 Kim Kinnear
 
 Distributed under the MIT License.  See the file LICENSE for details.
