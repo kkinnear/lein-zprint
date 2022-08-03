@@ -19,7 +19,7 @@ look here
 for information!
 
 Note that the pre-built binaries discussed in the link above will (as of
-version `zprint 1.2.4`) perform essentially the same operations as lein zprint.
+version `zprint 1.2.5`) perform essentially the same operations as lein zprint.
 You can do:
 ```
 $ zprint -w *.clj
@@ -52,10 +52,10 @@ use the first file it finds when searching up from the current directory.
 
 It is pretty straightforward to use lein zprint.
 
-Place `[lein-zprint "1.2.4.1"]` into the `:plugins` vector of your project.clj:
+Place `[lein-zprint "1.2.5"]` into the `:plugins` vector of your project.clj:
 
 ```
-:plugins [[lein-zprint "1.2.4.1"]]
+:plugins [[lein-zprint "1.2.5"]]
 ```
 
 Then, to format a source file, simply invoke `lein zprint` on that file: 
@@ -79,7 +79,7 @@ setting a zprint options map in your project.clj:
 
 ```
 ...
-:plugins [[lein-zprint "1.2.4.1"]]
+:plugins [[lein-zprint "1.2.5"]]
 :zprint {:old? false}
 ...
 ```
