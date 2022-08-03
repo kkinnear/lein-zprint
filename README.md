@@ -52,10 +52,10 @@ use the first file it finds when searching up from the current directory.
 
 It is pretty straightforward to use lein zprint.
 
-Place `[lein-zprint "1.2.4"]` into the `:plugins` vector of your project.clj:
+Place `[lein-zprint "1.2.4.1"]` into the `:plugins` vector of your project.clj:
 
 ```
-:plugins [[lein-zprint "1.2.4"]]
+:plugins [[lein-zprint "1.2.4.1"]]
 ```
 
 Then, to format a source file, simply invoke `lein zprint` on that file: 
@@ -79,7 +79,7 @@ setting a zprint options map in your project.clj:
 
 ```
 ...
-:plugins [[lein-zprint "1.2.4"]]
+:plugins [[lein-zprint "1.2.4.1"]]
 :zprint {:old? false}
 ...
 ```
