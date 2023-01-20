@@ -6,8 +6,8 @@
 (if (and :a :b)
 [:a :b :c :aaaaaaaaaaaaa :bbbbbbbbbbbbbbb
  :ccccccccccccc :ddddddddd :eeeeeeeeeee :ffffffff]
-#_(concat
-  (list :averylongkeyword :anotherverylongkeyword
-        :athirdverylongkeywor :afourthone
-        :fifthone :sixthone))))
+#_(concat (list :averylongkeyword
+                  :anotherverylongkeyword
+                :athirdverylongkeywor :afourthone
+                :fifthone :sixthone))))
 
