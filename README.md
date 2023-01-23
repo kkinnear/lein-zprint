@@ -341,6 +341,6 @@ This default configuration is available in two ways:
 
 ## License
 
-Copyright © 2016-2022 Kim Kinnear
+Copyright © 2016-2023 Kim Kinnear
 
 Distributed under the MIT License.  See the file LICENSE for details.
