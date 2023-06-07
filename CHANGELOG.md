@@ -1,6 +1,17 @@
 # Change Log
 All notable changes to this project will be documented in this file. 
 
+## 1.2.8 - 2023-06-08
+
+### Added
+
+### Changed
+
+### Fixed
+
+  * Updated to [zprint "1.2.8"].
+
+
 ## 1.2.7 - 2023-06-08
 
 ### Added
